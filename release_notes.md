@@ -1,5 +1,5 @@
 ***********************************
-# lsdo_project_template 0.1.0 (March 24, 2023)
+# py_slsqp 0.1.0 (March 24, 2023)
 
 Summary of major changes from the previous release.
 
