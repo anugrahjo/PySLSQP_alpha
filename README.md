@@ -12,7 +12,7 @@
 [![Forks](https://img.shields.io/github/forks/LSDOlab/py_slsqp.svg)](https://github.com/LSDOlab/py_slsqp/network)
 [![Issues](https://img.shields.io/github/issues/LSDOlab/py_slsqp.svg)](https://github.com/LSDOlab/py_slsqp/issues)
 
-
+Prebuilt SLSQP for Python
 A template repository for LSDOlab projects
 
 This repository serves as a template for all LSDOlab projects with regard to documentation, testing and hosting of open-source code.

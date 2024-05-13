@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
-
+import shutil
+import subprocess
 import codecs
 import os.path
 
@@ -19,36 +20,55 @@ def get_version(rel_path):
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setup(
-    name='py_slsqp',
-    version=get_version('py_slsqp/__init__.py'),
-    author='Author name',
-    author_email='author@gmail.com',
-    license='GPLv3+',
-    keywords='python project template repository package',
-    url='http://github.com/LSDOlab/py_slsqp',
-    download_url='http://pypi.python.org/pypi/py_slsqp',
-    description='A template repository/package for LSDOlab projects',
-    long_description=long_description,
-    long_description_content_type='text/markdown',
-    packages=find_packages(),
-    python_requires='>=3.7',
-    platforms=['any'],
-    install_requires=['numpy',],
-    classifiers=[
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
-        'Operating System :: OS Independent',
-        'Intended Audience :: Developers',
-        'Natural Language :: English',
-        'Topic :: Documentation',
-        'Topic :: Documentation :: Sphinx',
-        'Topic :: Software Development',
-        'Topic :: Software Development :: Documentation',
-        'Topic :: Software Development :: Testing',
-        'Topic :: Software Development :: Libraries',
-    ],
-)
+def build_meson():
+    meson = shutil.which('meson')
+    builddir = 'meson_builddir'
+    prefix = os.path.join(os.getcwd(), 'pyslsqp')
+    if meson is None:
+        raise RuntimeError('meson not found in PATH')
+    subprocess.run([meson, 'setup', builddir])
+    subprocess.run([meson, 'compile', '-C', builddir])
+
+if __name__ == "__main__":
+    build_meson()
+    setup(
+        name='pyslsqp',
+        version=get_version('py_slsqp/__init__.py'),
+        author='Author name',
+        author_email='author@gmail.com',
+        license='BSD-3-Clause',
+        # TODO: Add the correct keywords and license
+        keywords='slsqp optimization scipy',
+        url='http://github.com/LSDOlab/py_slsqp',
+        download_url='http://pypi.python.org/pypi/py_slsqp',
+        description="A Python version of the Scipy SLSQP optimization algorithm",
+        long_description=long_description,
+        long_description_content_type='text/markdown',
+        packages=find_packages(),
+        python_requires='>=3.7',
+        # platforms=["Linux, Windows", "Mac OS X", "Unix", "POSIX", "Any"],
+        # TODO: Add the correct classifiers license, platforms, and install_requires version requirements
+        install_requires=["numpy>=1.16", "h5py>=2.10", "matplotlib>=3.4"],
+        classifiers=[
+            'Development Status :: 4 - Beta',
+            # 'Development Status :: 5 - Production/Stable',
+            'License :: OSI Approved :: BSD License',
+            'Operating System :: OS Independent',
+            'Programming Language :: Python',
+            'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.10',
+            'Programming Language :: Python :: 3.11',
+            'Intended Audience :: Developers',
+            'Intended Audience :: Science/Research',
+            'Intended Audience :: Education',
+            'Natural Language :: English',
+            'Topic :: Education',
+            'Topic :: Education :: Computer Aided Instruction (CAI)',
+            'Topic :: Scientific/Engineering',
+            'Topic :: Scientific/Engineering :: Mathematics',
+            'Topic :: Software Development',
+            'Topic :: Software Development :: Libraries',
+        ],
+    )
