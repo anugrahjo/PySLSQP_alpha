@@ -11,7 +11,7 @@ def test_VALUES_TEMPLATE():
     '''
 
     # Import class/function to test
-    from py_slsqp.directory.file import Class
+    from pyslsqp.directory.file import Class
     object = Class()
 
     # Run test scenario
@@ -38,7 +38,7 @@ def test_EQUAL_TEMPLATE():
     '''
 
     # Import class/function to test
-    from py_slsqp.directory.file import Class
+    from pyslsqp.directory.file import Class
     object = Class()
 
     # Run test scenario
@@ -62,7 +62,7 @@ def test_EXCEPTIONS_TEMPLATE():
     '''
 
     # Import class/function to test
-    from py_slsqp.directory.file import Class
+    from pyslsqp.directory.file import Class
     object = Class()
 
     # Check to make sure exceptions are raised
@@ -76,6 +76,6 @@ def test_EXCEPTIONS_TEMPLATE():
 
     # Make sure the correct errors are being raised
     assert exc_info.type is KeyError
-    assert str(exc_info.value) == 'caddee variable not found'
+    assert str(exc_info.value) == 'var_name variable not found'
 
 

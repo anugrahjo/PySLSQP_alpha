@@ -1,4 +1,4 @@
-# Welcome to py_slsqp
+# Welcome to PySLSQP
 
 ![alt text](/src/images/lsdolab.png "Title displayed")
 

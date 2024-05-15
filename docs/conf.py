@@ -10,13 +10,13 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('../py_slsqp/core'))     # for autodoc
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../py_slsqp'))     # for autodoc
 
 # -- Project information -----------------------------------------------------
 
-project = 'py_slsqp'
+project = 'PySLSQP'
 copyright = '2023, Anugrah'
 author = 'Anugrah'
 version = '0.1'
@@ -31,11 +31,12 @@ version = '0.1'
 extensions = [
     "sphinx_rtd_theme",
     "autoapi.extension",
+    "sphinx.ext.autodoc",           # for auto generating API reference
     "numpydoc",                 
     "sphinx_copybutton",            # allows copying code embedded in the docs rendered from .md or .ipynb files
     "myst_nb",                      # renders .md, .myst, .ipynb files
     "sphinx.ext.viewcode",          # adds the source code for classes and functions in auto generated api ref
-    "sphinxcontrib.collections",    # adds files from outside src and executes functions before Sphinx builds
+    # "sphinxcontrib.collections",    # adds files from outside src and executes functions before Sphinx builds
     "sphinxcontrib.bibtex",         # for references and citations
 ]
 
@@ -53,8 +54,8 @@ myst_title_to_header = True
 myst_enable_extensions = ["dollarmath", "amsmath", "tasklist"]
 nb_execution_mode = 'off'
 
-# autoapi options
-autoapi_dirs = ["../py_slsqp/core"]
+# # autoapi options
+autoapi_dirs = ["../pyslsqp"]
 autoapi_root = 'src/autoapi'
 autoapi_type = 'python'
 autoapi_file_patterns = ['*.py', '*.pyi']
@@ -104,101 +105,101 @@ html_theme_options = {
 # html_static_path = ['_static']
 
 
-import glob
-# Function used by collections for converting .py files from examples
-# to .md and writing those into `_temp/target/` directory before Sphinx builds
-def py2md(config):
-    # root_dir needs a trailing slash (i.e. /root/dir/)
-    for ex in glob.iglob(config['target'] + '**/ex_*.py', recursive=True):
-        with open(ex) as f:
-            code = f.read()
-            no_line_breaks = ' '.join(code.splitlines())
-            single_start = 1e20 if code.find("'''") == -1 else code.find("'''")
-            double_start = 1e20 if code.find('"""') == -1 else code.find('"""')
+# import glob
+# # Function used by collections for converting .py files from examples
+# # to .md and writing those into `_temp/target/` directory before Sphinx builds
+# def py2md(config):
+#     # root_dir needs a trailing slash (i.e. /root/dir/)
+#     for ex in glob.iglob(config['target'] + '**/ex_*.py', recursive=True):
+#         with open(ex) as f:
+#             code = f.read()
+#             no_line_breaks = ' '.join(code.splitlines())
+#             single_start = 1e20 if code.find("'''") == -1 else code.find("'''")
+#             double_start = 1e20 if code.find('"""') == -1 else code.find('"""')
 
-            if single_start < double_start:      
-                title, desc = split_first_string_between_quotes(no_line_breaks, "'")
-            elif double_start < single_start:
-                title, desc = split_first_string_between_quotes(no_line_breaks, '"')
-            else:
-                raise SyntaxError('Docstring for title and description is not declared correctly')
+#             if single_start < double_start:      
+#                 title, desc = split_first_string_between_quotes(no_line_breaks, "'")
+#             elif double_start < single_start:
+#                 title, desc = split_first_string_between_quotes(no_line_breaks, '"')
+#             else:
+#                 raise SyntaxError('Docstring for title and description is not declared correctly')
 
-        with open(ex[:-3]+'.md', 'w') as g:
-            g.write('# ' + title + '\n')
-            g.write(desc + '\n\n')
-            g.write('```python\n')
-            g.write(code)
-            g.write('\n```')
+#         with open(ex[:-3]+'.md', 'w') as g:
+#             g.write('# ' + title + '\n')
+#             g.write(desc + '\n\n')
+#             g.write('```python\n')
+#             g.write(code)
+#             g.write('\n```')
 
-    return
+#     return
 
-import re
+# import re
 
-def split_first_string_between_quotes(code_string, quotes):
-    if quotes == "'":
-      check = re.search("'''(.+?)'''", code_string)
-    elif quotes == '"':
-      check = re.search('"""(.+?)"""', code_string)
+# def split_first_string_between_quotes(code_string, quotes):
+#     if quotes == "'":
+#       check = re.search("'''(.+?)'''", code_string)
+#     elif quotes == '"':
+#       check = re.search('"""(.+?)"""', code_string)
     
-    if check:
-      docstring = check.group(1)
-      out_strings = docstring.split(':', 1)
-      if len(out_strings)==2:
-        title, desc = out_strings[0].strip(), out_strings[1].strip()
-      else:
-        title, desc = out_strings[0].strip(), ''
+#     if check:
+#       docstring = check.group(1)
+#       out_strings = docstring.split(':', 1)
+#       if len(out_strings)==2:
+#         title, desc = out_strings[0].strip(), out_strings[1].strip()
+#       else:
+#         title, desc = out_strings[0].strip(), ''
 
-      return title, desc
+#       return title, desc
     
-    else:
-        raise SyntaxError('Docstring for title and description is not declared correctly')
+#     else:
+#         raise SyntaxError('Docstring for title and description is not declared correctly')
 
-collections = {
+# collections = {
     
-    # copy_tutorials collection copies the contents inside `/tutorials` 
-    # directory into `/src/_temp/tutorials`
-   'copy_tutorials': {
-      'driver': 'copy_folder',
-      'source': '../tutorials', # source relative to path of makefile, not wrt /src
-      'target': 'tutorials/',
-      'ignore': [],
-    #   'active': True,         # default: True. If False, this collection is ignored during doc build.
-    #   'safe': True,           # default: True. If True, any problem will raise an exception and stops the build.
-      'clean': True,            # default: True. If False, no cleanup is done before collections get executed.
-      'final_clean': True,      # default: True. If True, a final cleanup is done at the end of a Sphinx build.
-    #   'tags': ['my_collection', 'dummy'],     # List of tags, which trigger an activation of the collection.
-                                        # Should be used together with active set to False, 
-                                        # otherwise the collection gets always executed.
-                                        # Use -t tag option of sphinx-build command to trigger related collections.
-                                        # e.g. : `sphinx-build -b html -t dummy . _build/html`
-   },
+#     # copy_tutorials collection copies the contents inside `/tutorials` 
+#     # directory into `/src/_temp/tutorials`
+#    'copy_tutorials': {
+#       'driver': 'copy_folder',
+#       'source': '../tutorials', # source relative to path of makefile, not wrt /src
+#       'target': 'tutorials/',
+#       'ignore': [],
+#     #   'active': True,         # default: True. If False, this collection is ignored during doc build.
+#     #   'safe': True,           # default: True. If True, any problem will raise an exception and stops the build.
+#       'clean': True,            # default: True. If False, no cleanup is done before collections get executed.
+#       'final_clean': True,      # default: True. If True, a final cleanup is done at the end of a Sphinx build.
+#     #   'tags': ['my_collection', 'dummy'],     # List of tags, which trigger an activation of the collection.
+#                                         # Should be used together with active set to False, 
+#                                         # otherwise the collection gets always executed.
+#                                         # Use -t tag option of sphinx-build command to trigger related collections.
+#                                         # e.g. : `sphinx-build -b html -t dummy . _build/html`
+#    },
 
-   'copy_examples': {
-      'driver': 'copy_folder',
-      'source': '../examples',  # source relative to path of makefile, not wrt /src
-      'target': 'examples/',
-      'ignore': [],
-      'clean': True,            # default: True. If False, no cleanup is done before collections get executed.
-      'final_clean': True,      # default: True. If True, a final cleanup is done at the end of a Sphinx build.
-   },
+#    'copy_examples': {
+#       'driver': 'copy_folder',
+#       'source': '../examples',  # source relative to path of makefile, not wrt /src
+#       'target': 'examples/',
+#       'ignore': [],
+#       'clean': True,            # default: True. If False, no cleanup is done before collections get executed.
+#       'final_clean': True,      # default: True. If True, a final cleanup is done at the end of a Sphinx build.
+#    },
 
-    # convert_examples collection converts all .py files to .md files recursively inside `_temp/examples` 
-    # directory and also extracts the docstrings from the .py files to generate title and descriptions
-    # for those examples
-   'convert_examples': {
-      'driver': 'writer_function',  # uses custom WriterFunctionDriver written by Anugrah
-      'from'  : '_temp/examples/',  # source relative to path of makefile, not wrt /src
-      'source': py2md,              # custom function written above in `conf.py`
-      'target': 'examples/',        # target was a file for original FunctionDriver, e.g., 'target': 'examples/temp.txt'
-                                    # the original FunctionDriver was supposed to write only 1 file.
-      'clean': True,       
-      'final_clean': True,      
-    #   'write_result': True,   # this prevents original FunctionDriver from writing to the target file
-   },
-}
+#     # convert_examples collection converts all .py files to .md files recursively inside `_temp/examples` 
+#     # directory and also extracts the docstrings from the .py files to generate title and descriptions
+#     # for those examples
+#    'convert_examples': {
+#       'driver': 'writer_function',  # uses custom WriterFunctionDriver written by Anugrah
+#       'from'  : '_temp/examples/',  # source relative to path of makefile, not wrt /src
+#       'source': py2md,              # custom function written above in `conf.py`
+#       'target': 'examples/',        # target was a file for original FunctionDriver, e.g., 'target': 'examples/temp.txt'
+#                                     # the original FunctionDriver was supposed to write only 1 file.
+#       'clean': True,       
+#       'final_clean': True,      
+#     #   'write_result': True,   # this prevents original FunctionDriver from writing to the target file
+#    },
+# }
 
-collections_target = 'src/_temp'    # default : '_collections', the default storage location for all collections
-collections_clean  = True           # default : True, all configured target locations get wiped out at the beginning
-                                    # can be overwritten for individual collection by setting value for the 'clean' key
-collections_final_clean  = True     # default : True, all collections start their clean-up routine after a Sphinx build is done
-                                    # can be overwritten for individual collection by setting value for the 'final_clean' key
+# collections_target = 'src/_temp'    # default : '_collections', the default storage location for all collections
+# collections_clean  = True           # default : True, all configured target locations get wiped out at the beginning
+#                                     # can be overwritten for individual collection by setting value for the 'clean' key
+# collections_final_clean  = True     # default : True, all collections start their clean-up routine after a Sphinx build is done
+#                                     # can be overwritten for individual collection by setting value for the 'final_clean' key
