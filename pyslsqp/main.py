@@ -20,10 +20,10 @@ from numpy import array, isfinite, linalg
 
 _epsilon = np.sqrt(np.finfo(float).eps)
 
-from pyslsqp._slsqp import slsqp
+from ._slsqp import slsqp
 
-from save_and_load import save_iteration
-from visualize import Visualizer
+from .save_and_load import save_iteration
+from .visualize import Visualizer
 
 try:
     import h5py
@@ -158,7 +158,7 @@ def get_default_options():
     return options
 
 
-def pyslsqp(x0, obj=None, grad=None, 
+def optimize(x0, obj=None, grad=None, 
             con=None, jac=None, meq=0, callback=None,
             xl=None, xu=None, x_scaler=1.0, obj_scaler=1.0, con_scaler=1.0,
             maxiter=100, acc=1.0E-6, iprint=1,
@@ -814,17 +814,17 @@ if __name__ == "__main__":
         return np.eye(5, 10)
     
     x0 = np.ones(10)
-    res1 = pyslsqp(x0, obj, grad=grad, summary_filename='uncon_slsqp.out', x_scaler=0.02, obj_scaler=100., acc=1.0E-6)
-    res2 = pyslsqp(x0, obj, summary_filename='uncon_fd_slsqp.out')
+    res1 = optimize(x0, obj, grad=grad, summary_filename='uncon_slsqp.out', x_scaler=0.02, obj_scaler=100., acc=1.0E-6)
+    res2 = optimize(x0, obj, summary_filename='uncon_fd_slsqp.out')
 
-    res3 = pyslsqp(x0, obj, grad=grad, xl=0.2, xu =0.9, summary_filename='bdcon_slsqp.out', x_scaler=0.02, obj_scaler=100., acc=1.0E-6)
-    res4 = pyslsqp(x0, obj, xl=0.2, xu =0.9, summary_filename='bdcon_fd_slsqp.out', x_scaler=0.02*np.ones(10), obj_scaler=100., acc=1.0E-6)
+    res3 = optimize(x0, obj, grad=grad, xl=0.2, xu =0.9, summary_filename='bdcon_slsqp.out', x_scaler=0.02, obj_scaler=100., acc=1.0E-6)
+    res4 = optimize(x0, obj, xl=0.2, xu =0.9, summary_filename='bdcon_fd_slsqp.out', x_scaler=0.02*np.ones(10), obj_scaler=100., acc=1.0E-6)
 
-    res5 = pyslsqp(x0, obj, grad=grad, con=con, jac=jac, summary_filename='ineq_slsqp.out', save_filename='ineq_slsqp.hdf5', save_itr='major', save_vars=['x', 'objective', 'majiter'], x_scaler=0.02, obj_scaler=100., con_scaler=0.02)
-    res6 = pyslsqp(x0, obj, con=con, summary_filename='ineq_fd_slsqp.out', save_filename='ineq_fd_slsqp.hdf5', save_itr='major', save_vars=['x', 'objective', 'majiter'], x_scaler=0.02*np.ones(10), obj_scaler=100., con_scaler=0.02*np.ones(4))
+    res5 = optimize(x0, obj, grad=grad, con=con, jac=jac, summary_filename='ineq_slsqp.out', save_filename='ineq_slsqp.hdf5', save_itr='major', save_vars=['x', 'objective', 'majiter'], x_scaler=0.02, obj_scaler=100., con_scaler=0.02)
+    res6 = optimize(x0, obj, con=con, summary_filename='ineq_fd_slsqp.out', save_filename='ineq_fd_slsqp.hdf5', save_itr='major', save_vars=['x', 'objective', 'majiter'], x_scaler=0.02*np.ones(10), obj_scaler=100., con_scaler=0.02*np.ones(4))
     
-    res7 = pyslsqp(x0, obj, grad=grad, con=coneq, jac=jaceq, meq=5, summary_filename='eq_slsqp.out', save_itr='all', save_filename='eq_slsqp.hdf5', x_scaler=0.02, obj_scaler=100., con_scaler=0.02, visualize=True, visualize_vars=['objective', 'optimality', 'feasibility', 'x[0]', 'constraints[0]', 'gradient[0]', 'multipliers[0]', 'jacobian[0,0]'])
-    res8 = pyslsqp(x0, obj, con=coneq, meq=5, summary_filename='eq_fd_slsqp.out', save_itr='all', save_filename='eq_fd_slsqp.hdf5', x_scaler=0.02*np.ones(10,), obj_scaler=100., con_scaler=0.02*np.ones(5))
+    res7 = optimize(x0, obj, grad=grad, con=coneq, jac=jaceq, meq=5, summary_filename='eq_slsqp.out', save_itr='all', save_filename='eq_slsqp.hdf5', x_scaler=0.02, obj_scaler=100., con_scaler=0.02, visualize=True, visualize_vars=['objective', 'optimality', 'feasibility', 'x[0]', 'constraints[0]', 'gradient[0]', 'multipliers[0]', 'jacobian[0,0]'])
+    res8 = optimize(x0, obj, con=coneq, meq=5, summary_filename='eq_fd_slsqp.out', save_itr='all', save_filename='eq_fd_slsqp.hdf5', x_scaler=0.02*np.ones(10,), obj_scaler=100., con_scaler=0.02*np.ones(5))
 
     options = get_default_options()
     options['obj'] = obj
@@ -833,7 +833,7 @@ if __name__ == "__main__":
     options['jac'] = jac
     # options['visualize'] = True
     # options['visualize_vars'] = ['objective', 'optimality', 'feasibility']
-    res9 = pyslsqp(x0, **options)
+    res9 = optimize(x0, **options)
 
     options  = {'obj': obj, 'grad': grad, 'con': con, 'jac': jac}
     # options |= {'summary_filename': 'options_slsqp.out', 'x_scaler': 0.02, 'obj_scaler': 100., 'con_scaler': 0.02}
@@ -841,7 +841,7 @@ if __name__ == "__main__":
     # Normal start
     options.update({'summary_filename': 'options_slsqp.out', 'x_scaler': 0.02, 'obj_scaler': 100., 'con_scaler': 0.02})
     options.update({'save_itr': 'all', 'save_filename': 'options_slsqp.hdf5', 'save_vars': ['x', 'objective', 'optimality', 'feasibility', 'constraints', 'gradient', 'multipliers', 'jacobian']})
-    res10 = pyslsqp(x0, **options)
+    res10 = optimize(x0, **options)
 
     # Warm start
     options.update({'summary_filename': 'options_slsqp_warm.out', 'x_scaler': 0.02, 'obj_scaler': 100., 'con_scaler': 0.02})
@@ -854,7 +854,7 @@ if __name__ == "__main__":
     # options.update({'save_itr': 'major', 'save_filename': 'options_slsqp_hot.hdf5', 'save_vars': ['x', 'objective', 'optimality', 'feasibility', 'constraints', 'gradient', 'multipliers', 'jacobian']})
 
     x0 = np.ones(10) * 0.5
-    res11 = pyslsqp(x0, **options)
+    res11 = optimize(x0, **options)
 
 
     def obj(x):
@@ -869,5 +869,5 @@ if __name__ == "__main__":
     x0 = np.array([10., 25.])
     xl = np.array([0., -np.inf])
 
-    res12 = pyslsqp(x0, obj, grad=grad, con=con, jac=jac, meq=meq, xl =xl, summary_filename='lag_slsqp.out', save_itr='all', save_filename='lag_slsqp.hdf5', visualize=True, visualize_vars=['objective', 'optimality', 'feasibility', 'x[0]', 'constraints[0]', 'gradient[0]', 'multipliers[0]', 'multipliers[1]'])
+    res12 = optimize(x0, obj, grad=grad, con=con, jac=jac, meq=meq, xl =xl, summary_filename='lag_slsqp.out', save_itr='all', save_filename='lag_slsqp.hdf5', visualize=True, visualize_vars=['objective', 'optimality', 'feasibility', 'x[0]', 'constraints[0]', 'gradient[0]', 'multipliers[0]', 'multipliers[1]'])
     print(res12['x'])

@@ -106,5 +106,5 @@ pip install sphinx myst-nb sphinx_rtd_theme sphinx-copybutton sphinx-autoapi num
 Once all the source code is written for your documentation, 
 build the new documentation on your system by going into the `./docs` folder and running `make html`.
 This will build all the html pages locally and you can verify if the documentation was built as intended by
-opening the `docs/_build/html/welcome.html` on your web browser.
+opening the `docs/_build/html/index.html` on your web browser.
 

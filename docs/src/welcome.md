@@ -54,7 +54,7 @@ year = "2024",
 }
 ```
 
-## Bugs, feature requests, questions
+<!-- ## Bugs, feature requests, questions
 Please use the [GitHub issue tracker](https://github.com/anugrahjo/PySLSQP_alpha/issues) for reporting bugs, requesting new features, or any other questions.
 
 ## Contributing
@@ -63,9 +63,8 @@ Please refer the [`CONTRIBUTING.md`](https://github.com/anugrahjo/PySLSQP_alpha/
 file for guidelines on how to contribute.
 
 ## License
-This project is licensed under the terms of the **BSD license**.
+This project is licensed under the terms of the **BSD license**. -->
 
-<!-- Remove/add custom pages from/to toc as per your package's requirement -->
 
 ## Contents
 

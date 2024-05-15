@@ -1,5 +1,5 @@
 [build-system]
-build-backend = 'mesonpy'
+build-backend = 'setuptools.build_meta'
 requires = ['meson-python', 'setuptools', 'wheel', 'twine', 'numpy', 'scipy']
 
 [project]

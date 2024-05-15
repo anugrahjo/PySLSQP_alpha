@@ -23,28 +23,40 @@ with open("README.md", "r") as fh:
 def build_meson():
     meson = shutil.which('meson')
     builddir = 'meson_builddir'
-    prefix = os.path.join(os.getcwd(), 'pyslsqp')
     if meson is None:
         raise RuntimeError('meson not found in PATH')
     subprocess.run([meson, 'setup', builddir])
     subprocess.run([meson, 'compile', '-C', builddir])
+    build_path = os.path.join(os.getcwd(), builddir, 'pyslsqp')
+    target_path = os.path.join(os.getcwd(), 'pyslsqp')
+
+    for root, dirs, files in os.walk(build_path):
+        for file in files:
+            if file.endswith('.so'):
+                from_path = os.path.join(root, file)
+                to_path = os.path.join(target_path, file)
+                shutil.copy(from_path, to_path)
 
 if __name__ == "__main__":
     build_meson()
+
     setup(
         name='pyslsqp',
-        version=get_version('py_slsqp/__init__.py'),
+        version=get_version('pyslsqp/__init__.py'),
         author='Author name',
         author_email='author@gmail.com',
         license='BSD-3-Clause',
         # TODO: Add the correct keywords and license
         keywords='slsqp optimization scipy',
-        url='http://github.com/LSDOlab/py_slsqp',
-        download_url='http://pypi.python.org/pypi/py_slsqp',
-        description="A Python version of the Scipy SLSQP optimization algorithm",
+        url='http://github.com/LSDOlab/pyslsqp',
+        download_url='http://pypi.python.org/pypi/pyslsqp',
+        description="A Python wrapper for the SLSQP optimization algorithm",
         long_description=long_description,
         long_description_content_type='text/markdown',
-        packages=find_packages(),
+        packages=find_packages(where="."),
+        # package_dir={"": "pyslsqp"},
+        # include_package_data=True,
+        package_data={'': ['*.so']},
         python_requires='>=3.7',
         # platforms=["Linux, Windows", "Mac OS X", "Unix", "POSIX", "Any"],
         # TODO: Add the correct classifiers license, platforms, and install_requires version requirements

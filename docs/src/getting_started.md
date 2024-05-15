@@ -50,13 +50,13 @@ pytest
 ```
 
 ## Usage
-Most features of the PySLSQP package can be accessed through the `pyslsqp` function.
+Most features of the PySLSQP package can be accessed through the `optimize` function.
 However, there are some additional utility functions that are available to load various information 
 from the saved data files.
 Here is a small optimization example that minimizes `x^4 + y^4`.
 ```python
 import numpy as np
-from pyslsqp import pyslsqp
+from pyslsqp import optimize
 
 # `v` represents the vector of optimization variables
 def objective(v):
@@ -64,12 +64,12 @@ def objective(v):
     return v[0]**4 + v[1]**4
 
 x0 = np.array([1., 1.])
-# pyslsqp returns a dictionary that contains the reults from optimization
-results = pyslsqp(x0, obj=objective)
+# optimize returns a dictionary that contains the reults from optimization
+results = optimize(x0, obj=objective)
 print(results)
 ```
 Note that we did not provide the gradient for the objective function above.
-In the absence of user-provided gradients, `pyslsqp` estimates the gradients
+In the absence of user-provided gradients, `optimize` estimates the gradients
 using first-order finite differencing.
 However, it is always more efficient for the user to provide the exact gradients
 as will be shown in the next example.
@@ -80,7 +80,7 @@ subject to the constraints `x+y=1` and `3x+2y>=1`, and the bounds `x>=0.4` and `
 
 ```python
 import numpy as np
-from pyslsqp import pyslsqp
+from pyslsqp import optimize
 
 # `v` represents the vector of optimization variables
 def objective(v):
@@ -107,7 +107,7 @@ x_upper = np.array([np.inf, 0.6])
 num_eqcon = 1
 
 x0 = np.array([2,3])
-# pyslsqp returns a dictionary that contains the reults from optimization
-results = pyslsqp(x0, obj=objective, grad=gradient, con=constraints, jac=jacobian, meq=num_eqcon, xl=x_lower, xu=x_upper)
+# optimize returns a dictionary that contains the reults from optimization
+results = optimize(x0, obj=objective, grad=gradient, con=constraints, jac=jacobian, meq=num_eqcon, xl=x_lower, xu=x_upper)
 print(results)
 ```

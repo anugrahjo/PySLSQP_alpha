@@ -84,7 +84,7 @@ class Vector():
 
         .. deprecated:: 0.5.0
             Warnings for users if an object is deprecated.
-            `add` will be removed in py_slsqp 1.0.0, it will be replaced by
+            `add` will be removed in pyslsqp 1.0.0, it will be replaced by
             `add_new` since the latter works with many more types of arrays.
 
         Parameters
