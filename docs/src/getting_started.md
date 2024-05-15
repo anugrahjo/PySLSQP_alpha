@@ -2,63 +2,112 @@
 This page provides instructions for installing your package 
 and running a minimal example.
 
+## Dependencies
+Before installing PySLSQP, make sure you have the dependencies installed.
+Numpy is the minimum requirement for using PySLSQP. 
+[numpy](https://numpy.org/install/) can be installed from PyPI with
+```sh
+pip install numpy
+```
+Additionally, if you need to save optimization data and visualize different variables during the optimization,
+install `h5py` and `matplotlib` respectively.
+All the dependencies can be installed at once with 
+```sh
+pip install numpy h5py matplotlib
+```
+
 ## Installation
 
-### Installation instructions for users
-For direct installation with all dependencies, run on the terminal or command line
+To install the latest release of PySLSQP on PyPI, run on the terminal or command line
 ```sh
-$ pip install git+https://github.com/LSDOlab/py_slsqp.git
-```
-If you want users to install a specific branch, run
-```sh
-$ pip install git+https://github.com/LSDOlab/py_slsqp.git@branch
+pip install pyslsqp
 ```
 
-**Enabled by**: Copying the `setup.py` file, changing your repository name and version, 
-and adding all your dependencies into the list `install_requires`.
-
-### Installation instructions for developers
-To install `py_slsqp`, first clone the repository and install using pip.
-On the terminal or command line, run
+To install the latest commit from the main branch, run
 ```sh
-$ git clone https://github.com/LSDOlab/py_slsqp.git
-$ pip install -e ./py_slsqp
+pip install git+https://github.com/LSDOlab/PySLSQP.git@main
 ```
-**Enabled by**: Copying the setup.py file, and changing your repository name and version.
 
-## Setting up Documentation
+To upgrade PySLSQP from an older version to the latest released version on PyPI, run
+```sh
+pip install --upgrade pyslsqp
+```
 
-If you are not interested in using this repository as a template but only want to use the documentation template, 
-just copy the `/docs` directory and the `.readthedocs.yaml` file into your package root.
-However, make sure you have all the dependencies mentioned in the `setup.py` file installed before you build your
-documentation.
+To uninstall PySLSQP, run
+```sh
+pip uninstall pyslsqp
+```
 
-### Writing
-Start by modifying the documentation pages by editing `.md` files in the `/src` directory.
-Customize/add/remove pages from the template according to your package's requirements.
+## Testing
+To test if the package works correctly and as intended, install `pytest` using
+```sh
+pip install pytest
+```
 
-For automatically generated API references, add docstrings to your modules, classes, functions, etc., and
-then edit the list of directories containing files with docstrings intended for automatic API generation. 
-This can be done by editing the line `autoapi_dirs = ["../../py_slsqp/core"]` 
-in `conf.py` in the `/src` directory.
+and run the following line on the terminal from the project root directory:
+```sh
+pytest
+```
 
-Add Python files for examples and Jupyter notebooks for tutorials into the main project repository. 
-Filenames for examples should start with'ex_'.
-Add your examples and tutorials to the toctrees in `examples.md` and `tutorials.md` respectively.
+## Usage
+Most features of the PySLSQP package can be accessed through the `pyslsqp` function.
+However, there are some additional utility functions that are available to load various information 
+from the saved data files.
+Here is a small optimization example that minimizes `x^4 + y^4`.
+```python
+import numpy as np
+from pyslsqp import pyslsqp
 
-### Building
-Once you have all the source code written for your documentation, on the terminal/command line, run `make html`.
-This will build all the html pages locally and you can verify if the documentation was built as intended by
-opening the `docs/_build/html/welcome.html` on your browser.
+# `v` represents the vector of optimization variables
+def objective(v):
+    # the objective function
+    return v[0]**4 + v[1]**4
 
-### Hosting
-On your *Read the Docs* account, **import** your project **manually** from github repository, and link the `/docs` directory.
-Make sure to edit `requirements.txt` with dependencies for *Read the Docs* to build the documentation exactly
-as in your local build.
-Optionally, edit the `.readthedocs.yml` in the project root directory for building with specific operating systems or versions of Python.
-After you commit and push, *Read the Docs* will build your package on its servers and once its complete,
-you will see your documentation online.
-The default website address will be generated based on your *Read the Docs* project name as `https://<proj_name>.readthedocs.io/`.
-You can also customize the URL on *Read the Docs*, if needed.
+x0 = np.array([1., 1.])
+# pyslsqp returns a dictionary that contains the reults from optimization
+results = pyslsqp(x0, obj=objective)
+print(results)
+```
+Note that we did not provide the gradient for the objective function above.
+In the absence of user-provided gradients, `pyslsqp` estimates the gradients
+using first-order finite differencing.
+However, it is always more efficient for the user to provide the exact gradients
+as will be shown in the next example.
 
-## Setting up Testing
+The above example does not have any constraints or variable bounds. 
+Now, let's look at a slightly more complex example that minimizes `x^4 + y^4` 
+subject to the constraints `x+y=1` and `3x+2y>=1`, and the bounds `x>=0.4` and `y<=0.6`.
+
+```python
+import numpy as np
+from pyslsqp import pyslsqp
+
+# `v` represents the vector of optimization variables
+def objective(v):
+    # the objective function
+    return v[0]**4 + v[1]**4
+
+def gradient(v):
+    # the gradient of the objective function
+    return np.array([4*v[0]**3, 4*v[1]**3])
+
+def constraints(v):
+    # the constraint functions formulated as c_eq(x) = 0, c_ineq(x) >= 0
+    return  np.array([v[0] + v[1] - 1, 3*v[0] + 2*v[1] - 1])
+
+def jacobian(v):
+    # the jacobian of the constraint functions
+    return np.array([[1, 1], [3, 2]])
+
+# lower bounds on the optimization variables
+x_lower = np.array([0.4, -np.inf])
+# upper bounds on the optimization variables
+x_upper = np.array([np.inf, 0.6])
+# number of equality constraints (at the beginning of the constraint vector)
+num_eqcon = 1
+
+x0 = np.array([2,3])
+# pyslsqp returns a dictionary that contains the reults from optimization
+results = pyslsqp(x0, obj=objective, grad=gradient, con=constraints, jac=jacobian, meq=num_eqcon, xl=x_lower, xu=x_upper)
+print(results)
+```

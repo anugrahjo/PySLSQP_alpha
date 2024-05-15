@@ -4,12 +4,13 @@ Contributions are always welcome and appreciated!
 This document is intended for developers who would like to contribute to PySLSQP.
 
 ## Reporting Bugs / Feature suggestions
-Please use the GitHub issue tracker for reporting any bugs that you come across, and suggesting new features.
+Please use the [GitHub issue tracker](https://github.com/anugrahjo/PySLSQP_alpha/issues) 
+for reporting any bugs that you come across, and suggesting new features.
 Before doing so, please review the list of open issues to see if the same issue has been reported before. 
 If it's already been reported, please comment on the existing issue instead of creating a new one.
 
-If you already know the fix for a reported bug or know how to implement a suggested new feature, please feel free to
-make the necessary code changes on your fork and then submit a pull request. 
+If you already know the fix for a reported bug or know how to implement a suggested new feature, 
+please feel free to make the necessary code changes on your fork and then submit a pull request. 
 See below for more details on submitting pull requests.
 
 ## Setting up the package for local development
@@ -45,18 +46,18 @@ Make sure to fill out the pull request template and assign reviewers (repo admin
 ```sh
 git pull # Get most up-to-update version
 ```
-2. Merge with main and check for conflicts
+1. Merge with main and check for conflicts
 ```sh
 git merge main # merge with main locally on your branch to check for conflicts
 ```
-3. Run tests
+1. Run tests
 ```sh
 pytest # standard testing
 pytest --disable-warnings # tests without displaying warnings
 pytest -rP # tests while displaying print statements
 ```
 
-4. Push changes
+1. Push changes
 
 ```sh
 git push
