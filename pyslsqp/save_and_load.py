@@ -44,7 +44,7 @@ def print_dict_as_table(data):
     """
     print("--------------------------------------------------")
     for key, value in data.items():
-        print(f"        {key:20} : {value}")
+        print(f"        {key:24} : {value}")
     print("--------------------------------------------------")
     
 def print_file_contents(file_path):
@@ -73,7 +73,7 @@ def print_file_contents(file_path):
         warnings.warn("No results found in the file.")
     file.close()
 
-def load_variables(filepath, vars, itr_start=0, itr_end=-1, major_iter=False):
+def load_variables(filepath, vars, itr_start=0, itr_end=-1, major_only=False):
     '''
     Load specified variable iterates between itr_start and itr_end from the saved file.
     Returns a dictionary with the variable names as keys and list of variable iterates as values.
@@ -93,7 +93,7 @@ def load_variables(filepath, vars, itr_start=0, itr_end=-1, major_iter=False):
         Ending iteration to load the variables from. 
         Negative indices are allowed with -1 representing the last iteration
         and -2 representing the second last iteration and so on.
-    major_iter : bool, default=False
+    major_only : bool, default=False
         If True, only major iterations are loaded.
         If False, all iterations are loaded irrespective of major or line search iterations.
 
@@ -118,10 +118,9 @@ def load_variables(filepath, vars, itr_start=0, itr_end=-1, major_iter=False):
         raise ValueError("itr_end must be an integer.")
     
     file  = import_h5py_file(filepath)
-    print(file.keys())
     niter = len(file.keys()) - 2 # Number of iterations saved in the file [excludes 0th iteration and results]
     num_saves = len(file.keys()) - 1 # Number of iterations saved [includes 0th iteration but excludes results]
-    if major_iter:
+    if major_only:
         niter = file['results']['num_majiter'][()]
     if (-(niter+1) <= itr_start <= niter) and (-(niter+1) <= itr_end <= niter):
         start = itr_start * 1
@@ -138,21 +137,40 @@ def load_variables(filepath, vars, itr_start=0, itr_end=-1, major_iter=False):
 
     out_data = {}
     for var in vars:
-        if var not in file['iter_0'].keys():
+        if var.split('[')[0] not in file['iter_0'].keys():
             raise ValueError(f"Variable {var} not found in the file.")
+        
         out_data[var] = []
 
-    if major_iter:
+    if major_only:
         for i in range(num_saves):
             if file[f'iter_{i}']['ismajor'][()] and file[f'iter_{i}']['majiter'][()] >= start:
                 for var in vars:
-                    out_data[var].append(file[f'iter_{i}'][var][()])
+                    if '[' in var:
+                        name = var.split('[')[0]
+                        if name == 'jacobian':
+                            idx1, idx2 = map(int, var.split('[')[1].split(']')[0].split(','))
+                            out_data[var].append(file[f'iter_{i}'][name][idx1, idx2])
+                        else:
+                            idx = int(var.split('[')[1].split(']')[0])
+                            out_data[var].append(file[f'iter_{i}'][name][idx])
+                    else:
+                        out_data[var].append(file[f'iter_{i}'][var][()])
                 if file[f'iter_{i}']['majiter'][()] == end:
                     break
     else:
         for i in range(start, end+1):
             for var in vars:
-                out_data[var].append(file[f'iter_{i}'][var][()])
+                if '[' in var:
+                    name = var.split('[')[0]
+                    if name == 'jacobian':
+                        idx1, idx2 = map(int, var.split('[')[1].split(']')[0].split(','))
+                        out_data[var].append(file[f'iter_{i}'][name][idx1, idx2])
+                    else:
+                        idx = int(var.split('[')[1].split(']')[0])
+                        out_data[var].append(file[f'iter_{i}'][name][idx])
+                else:
+                    out_data[var].append(file[f'iter_{i}'][var][()])
     
     file.close()
 
@@ -176,7 +194,7 @@ def load_results(filepath):
     result_dict = {}
     for key in file['results'].keys():
         result_dict[key] = file['results'][key][()]
-        if key == 'message':
+        if key in ['message', 'save_filename', 'summary_filename']:
             result_dict[key] = result_dict[key].decode('utf-8')
     file.close()
     return result_dict
@@ -203,13 +221,4 @@ def load_attributes(filepath):
     return attr_dict
 
 if __name__ == "__main__":
-    # print_file_contents('eq_slsqp.hdf5')
-    # print_file_contents('ineq_slsqp.hdf5')
-    # print_dict_as_table(load_variables('eq_slsqp.hdf5', 'iter', itr_start=0, itr_end=-1, major_iter=False))
-    # print_dict_as_table(load_variables('eq_slsqp.hdf5', ['iter', 'majiter', 'mode'], itr_start=0, itr_end=-1, major_iter=True))
-    # print_dict_as_table(load_attributes('eq_slsqp.hdf5'))
-    # print_dict_as_table(load_results('eq_slsqp.hdf5'))
-    print_dict_as_table(load_variables('options_slsqp.hdf5', 'x'))
-    print_dict_as_table(load_results('options_slsqp.hdf5'))
-    print_dict_as_table(load_variables('options_slsqp_hot.hdf5', 'x'))
-    print_dict_as_table(load_results('options_slsqp_hot.hdf5'))
+    pass
