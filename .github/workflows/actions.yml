@@ -36,31 +36,7 @@ jobs:
       run: | 
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-        echo "$(dirname $(which ninja))" >> $GITHUB_PATH
-        # meson setup meson_builddir
-        # meson compile -C meson_builddir
-        # cat meson_builddir/meson-logs/meson-log.txt
-
         pip install -e .
-        echo "'inside meson_builddir/pyslsqp directory'"
-        ls meson_builddir/pyslsqp
-
-        # echo $PATH
-        # which ninja
-        # meson --version
-        # ninja --version
-        # cp /usr/bin/ninja /usr/local/bin/ninja
-        # ninja --version
-        # sudo ln -s /usr/bin/ninja-build /usr/bin/ninja
-        # ninja --version
-        # echo $?
-        # pwd 
-        # echo "'inside the root directory'"
-        # ls
-        
-        cat meson_builddir/meson-logs/meson-log.txt
-        echo "'inside the package'"
-        ls pyslsqp
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
     - name: Test with pytest
