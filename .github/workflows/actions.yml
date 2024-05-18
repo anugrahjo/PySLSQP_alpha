@@ -39,7 +39,7 @@ jobs:
         echo "$(dirname $(which ninja))" >> $GITHUB_PATH
         # meson setup meson_builddir
         # meson compile -C meson_builddir
-        cat meson_builddir/meson-logs/meson-log.txt
+        # cat meson_builddir/meson-logs/meson-log.txt
 
         pip install -e .
         echo "'inside meson_builddir/pyslsqp directory'"
