@@ -39,6 +39,8 @@ jobs:
         sudo apt-get update
         sudo apt-get install ninja-build
         pip install -e .
+        echo $PATH
+        which ninja
         pwd 
         echo "'inside the root directory'"
         ls
