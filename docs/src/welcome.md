@@ -1,9 +1,12 @@
 # Welcome to PySLSQP
 
 The SLSQP algorithm is designed to solve nonlinear programming (NLP) problems.
-PySLSQP is a Python package that wraps the original SLSQP algorithm written in Fortran.
-While the Fortran code is sourced from `scipy.optimize.minimize`, 
-PySLSQP significantly extends its functionality 
+PySLSQP is a Python package that wraps the original SLSQP algorithm 
+implemented in Fortran by Dieter Kraft {cite:p}`kraft1988software, kraft1994algorithm`.
+While the Fortran code in PySLSQP is sourced from 
+[`scipy.optimize.minimize`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html) 
+{cite:p}`virtanen2020scipy`, 
+PySLSQP extends its functionality 
 by offering new features for further analysis of optimization problems, 
 thereby significantly improving the utility of the original algorithm.
 The prebuilt packages for various system architectures are available on PyPI for download, 
@@ -18,7 +21,7 @@ Some of the additional features provided by PySLSQP include:
 
 - **Warm/Hot Starting**: PySLSQP supports warm/hot starting, enabling users to initialize the optimization 
   algorithm with a previously saved solution. This can be particularly useful when you want to restart an 
-  optimization from a previous solution or continue the optimization that was terminated
+  optimization from a previous solution or continue an optimization that was terminated
   for various reasons.
 
 - **Live Visualization**: PySLSQP provides the capability to visualize the optimization progress in real-time,
@@ -30,10 +33,11 @@ Some of the additional features provided by PySLSQP include:
   separate from their original definitions.
   Scaling can help improve the convergence behavior of the optimization algorithm and make it more robust.
 
-- **More Internal Optimization Variables**: PySLSQP provides access to additional internal optimization variables,
-  like optimality, feasibility, Lagrange multipliers, etc. which can be useful for advanced analysis 
-  of your problem. The original callback function in `scipy.optimize.minimize` only returned the optimization
-  variable iterates.
+- **More Internal Optimization Variables**: PySLSQP provides access to additional internal optimization variables
+  such as optimality, feasibility, Lagrange multipliers, etc. at every iteration, 
+  which can be useful for advanced analysis of the optimization problem. 
+  In `scipy.optimize.minimize`, the original callback function 
+  returns only the optimization variables, and only for the major iterations.
 
 These additional features make PySLSQP a powerful tool for solving constrained optimization problems in Python.
 In addition, PySLSQP also supports the estimation of gradients using first-order finite differencing, 
@@ -72,10 +76,15 @@ This project is licensed under the terms of the **BSD license**. -->
 :maxdepth: 2
 
 src/getting_started
-src/tutorials
-src/examples
+src/basic
+src/postprocessing
 src/api
 src/contributing
 src/changelog
 src/license
+```
+
+## References
+
+```{bibliography} src/references.bib
 ```

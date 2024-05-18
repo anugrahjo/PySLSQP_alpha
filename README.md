@@ -13,9 +13,10 @@
 [![Issues](https://img.shields.io/github/issues/anugrahjo/PySLSQP.svg)](https://github.com/anugrahjo/PySLSQP/issues)
 
 The SLSQP algorithm is designed to solve nonlinear programming (NLP) problems.
-PySLSQP is a Python package that wraps the original SLSQP algorithm written in Fortran.
+PySLSQP is a Python package that wrraps the original SLSQP algorithm 
+implemented in Fortran by Dieter Kraft.
 While the Fortran code is sourced from `scipy.optimize.minimize`, 
-PySLSQP significantly extends its functionality 
+PySLSQP extends its functionality 
 by offering new features for further analysis of optimization problems, 
 thereby significantly improving the utility of the original algorithm.
 The prebuilt packages for various system architectures are available on PyPI for download, 
@@ -30,7 +31,7 @@ Some of the additional features provided by PySLSQP include:
 
 - **Warm/Hot Starting**: PySLSQP supports warm/hot starting, enabling users to initialize the optimization 
   algorithm with a previously saved solution. This can be particularly useful when you want to restart an 
-  optimization from a previous solution or continue the optimization that was terminated
+  optimization from a previous solution or continue an optimization that was terminated
   for various reasons.
 
 - **Live Visualization**: PySLSQP provides the capability to visualize the optimization progress in real-time,
@@ -42,16 +43,17 @@ Some of the additional features provided by PySLSQP include:
   separate from their original definitions.
   Scaling can help improve the convergence behavior of the optimization algorithm and make it more robust.
 
-- **More Internal Optimization Variables**: PySLSQP provides access to additional internal optimization variables,
-  like optimality, feasibility, Lagrange multipliers, etc. which can be useful for advanced analysis 
-  of your problem. The original callback function in `scipy.optimize.minimize` only returned the optimization
-  variable iterates.
+- **More Internal Optimization Variables**: PySLSQP provides access to additional internal optimization variables
+  such as optimality, feasibility, Lagrange multipliers, etc. which can be useful for advanced analysis 
+  of the optimization problem. 
+  In `scipy.optimize.minimize`, the original callback function 
+  returns only the optimization variables, and only for the major iterations.
 
 These additional features make PySLSQP a powerful tool for solving constrained optimization problems in Python.
 In addition, PySLSQP also supports the estimation of gradients using first-order finite differencing, 
 as in the Scipy version. 
 
-## Dependencies
+<!-- ## Dependencies
 Before installing PySLSQP, make sure you have the dependencies installed.
 Numpy is the minimum requirement for using PySLSQP. 
 [numpy](https://numpy.org/install/) can be installed from PyPI with
@@ -63,7 +65,7 @@ install `h5py` and `matplotlib` respectively.
 All the dependencies can be installed at once with 
 ```sh
 pip install numpy h5py matplotlib
-```
+``` -->
 
 ## Installation
 
@@ -76,6 +78,8 @@ To install the latest commit from the main branch, run
 ```sh
 pip install git+https://github.com/LSDOlab/PySLSQP.git@main
 ```
+<!-- Note that this will compile the package locally on your computer.
+Therefore, this is  not recommended unless you are a developer and wants to edit the package for your use. -->
 
 To upgrade PySLSQP from an older version to the latest released version on PyPI, run
 ```sh
@@ -100,9 +104,9 @@ pytest
 
 ## Usage
 Most features of the PySLSQP package can be accessed through the `optimize` function.
-However, there are some additional utility functions that are available to load various information 
-from the saved data files.
-Here is a small optimization example that minimizes `x^4 + y^4`.
+However, there are some additional utility functions that are available for post-processing.
+Here is a small optimization example that minimizes `x^2 + y^2`.
+
 ```python
 import numpy as np
 from pyslsqp import optimize
@@ -110,56 +114,20 @@ from pyslsqp import optimize
 # `v` represents the vector of optimization variables
 def objective(v):
     # the objective function
-    return v[0]**4 + v[1]**4
+    return v[0]**2 + v[1]**2
 
 x0 = np.array([1., 1.])
-# optimize returns a dictionary that contains the reults from optimization
+# optimize returns a dictionary that contains the results from optimization
 results = optimize(x0, obj=objective)
 print(results)
 ```
 Note that we did not provide the gradient for the objective function above.
 In the absence of user-provided gradients, `optimize` estimates the gradients
 using first-order finite differencing.
-However, it is always more efficient for the user to provide the exact gradients
-as will be shown in the next example.
-
-The above example does not have any constraints or variable bounds. 
-Now, let's look at a slightly more complex example that minimizes `x^4 + y^4` 
-subject to the constraints `x+y=1` and `3x+2y>=1`, and the bounds `x>=0.4` and `y<=0.6`.
-
-```python
-import numpy as np
-from pyslsqp import optimize
-
-# `v` represents the vector of optimization variables
-def objective(v):
-    # the objective function
-    return v[0]**4 + v[1]**4
-
-def gradient(v):
-    # the gradient of the objective function
-    return np.array([4*v[0]**3, 4*v[1]**3])
-
-def constraints(v):
-    # the constraint functions formulated as c_eq(x) = 0, c_ineq(x) >= 0
-    return  np.array([v[0] + v[1] - 1, 3*v[0] + 2*v[1] - 1])
-
-def jacobian(v):
-    # the jacobian of the constraint functions
-    return np.array([[1, 1], [3, 2]])
-
-# lower bounds on the optimization variables
-x_lower = np.array([0.4, -np.inf])
-# upper bounds on the optimization variables
-x_upper = np.array([np.inf, 0.6])
-# number of equality constraints (at the beginning of the constraint vector)
-num_eqcon = 1
-
-x0 = np.array([2,3])
-# optimize returns a dictionary that contains the reults from optimization
-results = optimize(x0, obj=objective, grad=gradient, con=constraints, jac=jacobian, meq=num_eqcon, xl=x_lower, xu=x_upper)
-print(results)
-```
+However, it is always more efficient for the user to provide the exact gradients.
+Note also that we did not have any constraints or variable bounds in this problem.
+Examples with user-defined gradients, constraints, and bounds
+can be found in the [documentation](https://pyslsqp.readthedocs.io/).
 
 ## Documentation
 For API reference and more details on installation and usage, visit the [documentation](https://pyslsqp.readthedocs.io/).
