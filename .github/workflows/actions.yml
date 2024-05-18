@@ -37,11 +37,11 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install -e .
         pwd 
-        echo "inside the root directory"
+        echo "'inside the root directory'"
         ls
-        echo "inside mesonbuilddir/pyslsqp directory"
-        ls mesonbuilddir/pyslsqp
-        echo "inside the package"
+        echo "'inside meson_builddir/pyslsqp directory'"
+        ls meson_builddir/pyslsqp
+        echo "'inside the package'"
         ls pyslsqp
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
