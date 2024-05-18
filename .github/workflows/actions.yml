@@ -37,8 +37,8 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
         echo "$(dirname $(which ninja))" >> $GITHUB_PATH
-        meson setup meson_builddir
-        meson compile -C meson_builddir
+        # meson setup meson_builddir
+        # meson compile -C meson_builddir
         cat meson_builddir/meson-logs/meson-log.txt
 
         pip install -e .
