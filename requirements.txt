@@ -19,5 +19,5 @@ setuptools
 wheel
 twine
 
-ninja>=1.11
+ninja==1.8.2
 meson>=1.4
