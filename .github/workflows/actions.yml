@@ -39,6 +39,8 @@ jobs:
         pwd 
         echo "inside the root directory"
         ls
+        echo "inside mesonbuilddir/pyslsqp directory"
+        ls mesonbuilddir/pyslsqp
         echo "inside the package"
         ls pyslsqp
 
