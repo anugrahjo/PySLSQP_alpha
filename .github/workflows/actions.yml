@@ -41,7 +41,7 @@ jobs:
         which ninja
         meson --version
         ninja --version
-        echo $
+        echo $?
         pwd 
         echo "'inside the root directory'"
         ls
