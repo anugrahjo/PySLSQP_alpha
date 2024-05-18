@@ -35,9 +35,9 @@ jobs:
     - name: Install dependencies
       run: | 
         python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
         pip3 install --force-reinstall ninja
-        pip install -e .
+        pip3 install -e .
         pwd 
         echo "'inside the root directory'"
         ls
