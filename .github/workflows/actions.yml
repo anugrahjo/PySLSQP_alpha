@@ -37,6 +37,7 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install --force-reinstall ninja
+        pip install --force-reinstall meson
         pip install -e .
         pwd 
         echo "'inside the root directory'"
