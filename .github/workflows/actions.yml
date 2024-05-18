@@ -41,6 +41,10 @@ jobs:
         which ninja
         meson --version
         ninja --version
+        cp /usr/bin/ninja /usr/local/bin/ninja
+        ninja --version
+        sudo ln -s /usr/bin/ninja-build /usr/bin/ninja
+        ninja --version
         echo $?
         pwd 
         echo "'inside the root directory'"
