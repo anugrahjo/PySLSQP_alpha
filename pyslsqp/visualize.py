@@ -125,6 +125,7 @@ def visualize(savefilename, visualize_vars, itr_start=0, itr_end=-1, major_only=
 
     The variables to visualize should be a list of strings, where each string is the name of a variable to visualize. 
     The variables can be any of the following:
+    
         - 'objective'       : the objective function value
         - 'optimality'      : the optimality condition
         - 'feasibility'     : the feasibility condition

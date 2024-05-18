@@ -175,19 +175,17 @@ def optimize(x0, obj=None, grad=None,
     Kraft. The wrapper provides a slightly modified interface to the
     optimization problem and many additional features, compared to the Scipy wrapper.
 
-    This function solves the general nonlinear programming problem:
-    ::
-            minimize            f(x)
-            subject to          c_i(x) = 0,                 i = 1,...,meq
+    This function solves the general nonlinear programming problem: ::
 
-                                c_i(x) >= 0,                i = meq+1,...,m
+        minimize            f(x)
+        subject to          c_i(x) = 0,                 i = 1,...,meq
+                            c_i(x) >= 0,                i = meq+1,...,m
+                            xl_i <= x_i <= xu_i ,       i = 1,...,n
 
-                                xl_i <= x_i <= xu_i ,       i = 1,...,n
-
-    where x is a vector of variables with size n, f(x) is the objective,
-    c(x) is the constraint function, and xl and xu are vectors of lower and
-    upper bounds, respectively. The first meq constraints are equalities
-    while the remaining (m - meq) constraints are inequalities.
+    where `x` is a vector of variables with size `n`, `f(x)` is the objective,
+    `c(x)` is the constraint function, and `xl` and `xu` are vectors of lower and
+    upper bounds, respectively. The first `meq` constraints are equalities
+    while the remaining `(m - meq)` constraints are inequalities.
 
     Parameters
     ----------
