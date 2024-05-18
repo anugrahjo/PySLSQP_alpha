@@ -40,6 +40,8 @@ jobs:
         echo "'inside the root directory'"
         ls
         echo "'inside meson_builddir/pyslsqp directory'"
+        ls meson_builddir
+        echo "'inside meson_builddir/pyslsqp directory'"
         ls meson_builddir/pyslsqp
         echo "'inside the package'"
         ls pyslsqp
