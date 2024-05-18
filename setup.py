@@ -61,6 +61,7 @@ if __name__ == "__main__":
         # platforms=["Linux, Windows", "Mac OS X", "Unix", "POSIX", "Any"],
         # TODO: Add the correct classifiers license, platforms, and install_requires version requirements
         install_requires=["numpy>=1.16", "h5py>=2.10", "matplotlib>=3.4"],
+                        #   "plotly", "dash", "ipywidgets"],
         classifiers=[
             'Development Status :: 4 - Beta',
             # 'Development Status :: 5 - Production/Stable',
