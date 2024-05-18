@@ -1,6 +1,6 @@
 [build-system]
 build-backend = 'setuptools.build_meta'
-requires = ['meson-python', 'setuptools', 'wheel', 'twine', 'numpy', 'scipy']
+requires = ['meson-python', 'setuptools', 'wheel', 'twine', 'numpy', 'scipy', 'ninja']
 
 [project]
 name = 'pyslsqp'
