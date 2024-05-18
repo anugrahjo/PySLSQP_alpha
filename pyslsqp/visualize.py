@@ -39,7 +39,8 @@ class Visualizer:
         plt.ion()
         lines_dict = {}
         var_dict = {}
-        self.fig, self.axs = plt.subplots(len(visualize_vars))
+        n_plots = len(visualize_vars)
+        self.fig, self.axs = plt.subplots(n_plots, figsize=(10, 3*n_plots))
         self.fig.suptitle(f'SLSQP Optimization [{summary_filename}]')
         for ax, var in zip(self.axs, visualize_vars):
             # ax.set_title(var)
@@ -78,7 +79,7 @@ class Visualizer:
         x_data = np.arange(out_dict['majiter']+1)
         for k, var in enumerate(self.visualize_vars):
             if var in ['objective', 'optimality', 'feasibility']:
-                self.var_dict[var].append(out_dict[var])
+                self.var_dict[var].append(out_dict[var]*1.0) # *1.0 is necessary so that the value is not a reference
             elif var.startswith('jacobian['):
                 idx1, idx2 = map(int, var[9:-1].split(','))
                 self.var_dict[var].append(out_dict[var.split('[')[0]][idx1, idx2])
@@ -99,7 +100,7 @@ class Visualizer:
             self.axs[k].relim()
             self.axs[k].autoscale_view()
 
-        # time.sleep(0.1)
+        # time.sleep(0.5)
 
         # Redraw the plot
         self.fig.canvas.draw()
@@ -115,3 +116,67 @@ class Visualizer:
         plt.ioff()
         plt.show()
         self.wait_time += time.time() - w_start
+
+
+
+def visualize(savefilename, visualize_vars, itr_start=0, itr_end=-1, major_only=False):
+    '''
+    Visualize different variables using the saved data in the savefile.
+    The variables to visualize should be a list of strings, where each string is the name of a variable to visualize. 
+    The variables can be any of the following:
+        - 'objective'       : the objective function value
+        - 'optimality'      : the optimality condition
+        - 'feasibility'     : the feasibility condition
+        - 'x[i]'            : the ith variable value
+        - 'constraints[i]'  : the ith constraint value
+        - 'jacobian[i,j]'   : the (i,j) element of the Jacobian matrix
+        - 'gradient[i]'     : the ith gradient value
+        - 'multipliers[i]'  : the ith Lagrange multiplier value
+
+    Creates a plot with the specified variables on the y-axis and the iteration number on the x-axis.
+    The plots are stacked vertically in the order they are specified in the list.
+
+    Parameters
+    ----------
+    savefilename : str
+        Path to the saved file.
+    visualize_vars : str or list of str
+        List of variables to visualize.
+    itr_start : int, default=0
+        Starting iteration to visualize.
+        Negative indices are allowed with -1 representing the last iteration
+        and -2 representing the second last iteration and so on.
+    itr_end : int, default=-1
+        Ending iteration to visualize.
+        Negative indices are allowed with -1 representing the last iteration
+        and -2 representing the second last iteration and so on.
+    major_only : bool, default=False
+        If True, only major iterations are visualized.
+        If False, all iterations are visualized irrespective of major or line search iterations.
+    '''
+
+    v_start = time.time()
+    if plt is None:
+        raise ImportError("matplotlib not found, cannot visualize.")
+    from pyslsqp.postprocessing import load_variables
+    if isinstance(visualize_vars, str):
+        visualize_vars = [visualize_vars]
+    var_dict = load_variables(savefilename, visualize_vars, itr_start=itr_start, itr_end=itr_end, major_only=major_only)
+    
+    x_data = np.arange(len(var_dict[visualize_vars[0]]))
+    n_plots = len(visualize_vars)
+    fig, axs = plt.subplots(n_plots, figsize=(10, 3*n_plots))
+    fig.suptitle(f'SLSQP Optimization [{savefilename}]')
+    for ax, var in zip(axs, visualize_vars):
+        # ax.set_title(var)
+        # ax.set_xlabel('Iteration')
+        ax.set_ylabel(var)
+        if var in ['optimality', 'feasibility']:
+            ax.semilogy(x_data, var_dict[var], label=var)
+        else:
+            ax.plot(x_data, var_dict[var], label=var)
+
+        ax.legend()
+
+    plt.show()
+    vis_time = time.time() - v_start
