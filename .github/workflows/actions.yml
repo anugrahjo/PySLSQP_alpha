@@ -37,7 +37,14 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
         echo "$(dirname $(which ninja))" >> $GITHUB_PATH
+        meson setup meson_builddir
+        meson compile -C meson_builddir
+        cat meson_builddir/meson-logs/meson-log.txt
+        
         pip install -e .
+        echo "'inside meson_builddir/pyslsqp directory'"
+        ls meson_builddir
+
         echo $PATH
         which ninja
         meson --version
@@ -50,11 +57,8 @@ jobs:
         pwd 
         echo "'inside the root directory'"
         ls
-        echo "'inside meson_builddir/pyslsqp directory'"
-        ls meson_builddir
+        
         cat meson_builddir/meson-logs/meson-log.txt
-        echo "'inside meson_builddir/pyslsqp directory'"
-        ls meson_builddir/pyslsqp
         echo "'inside the package'"
         ls pyslsqp
 
