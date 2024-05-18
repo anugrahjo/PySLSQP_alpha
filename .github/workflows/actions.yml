@@ -16,10 +16,11 @@ jobs:
 
     # The tests will run on ubuntu with python versions 3.8, 3.9, and 3.10.
     # Add other OSes like windows and macOS if needed as well as other Python versions  
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
         # python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         python-version: [ "3.10",]
 
