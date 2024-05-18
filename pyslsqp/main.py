@@ -2,7 +2,7 @@
 This module provides a wrapper for the Sequential Least Squares Programming
 (SLSQP) optimization algorithm, originally implemented by Dieter Kraft.
 The wrapper provides a slightly modified interface to the optimization problem 
-and some additional features compared to the SciPy implementation.
+and many additional features compared to the SciPy implementation.
 
 The original algorithm is described in the following papers:
 1. Dieter Kraft, "A software package for sequential quadratic programming",
@@ -24,6 +24,8 @@ from ._slsqp import slsqp
 
 from .save_and_load import save_iteration
 from .visualize import Visualizer
+# from visualize_plotly import Visualizer
+# from visualize_plotly_tabs import Visualizer
 
 try:
     import h5py
@@ -171,7 +173,7 @@ def optimize(x0, obj=None, grad=None,
     Least Squares Programming (SLSQP).
     This function is a wrapper to the original SLSQP implementation by Dieter
     Kraft. The wrapper provides a slightly modified interface to the
-    optimization problem and some additional features.
+    optimization problem and many additional features, compared to the Scipy wrapper.
 
     This function solves the general nonlinear programming problem: 
             minimize            f(x)
@@ -181,7 +183,7 @@ def optimize(x0, obj=None, grad=None,
     where x is a vector of variables with size n, f(x) is the objective,
     c(x) is the constraint function, and xl and xu are vectors of lower and
     upper bounds, respectively. The first meq constraints are equalities
-    while the remaining m - meq constraints are inequalities.
+    while the remaining (m - meq) constraints are inequalities.
 
 
     Parameters
@@ -231,12 +233,11 @@ def optimize(x0, obj=None, grad=None,
     maxiter : int, default=100
         Maximum number of iterations.
     acc : float, default=1.0E-6
-        Precision goal for the value of f in the stopping criterion.
-        abs(acc) controls the final accuracy.
-        If acc < 0, a maximization problem is solved
-        otherwise a minimization problem is solved.
+        abs(acc) is the stopping criterion and controls the final accuracy.
+        If acc < 0, a maximization problem is solved.
+        Otherwise, a minimization problem is solved.
     iprint : int, default=1
-        Controls the verbosity of the optimization algorithm. 
+        Controls the verbosity of the SLSQP algorithm. 
         Set iprint <= 0 to suppress all console outputs.
         Set iprint  = 1 to print only the final results upon completion.
         Set iprint >= 2 to print the status of each major iteration and the final results.
@@ -245,20 +246,20 @@ def optimize(x0, obj=None, grad=None,
         If None (default), then step is selected using finite_diff_rel_step.
     finite_diff_rel_step : None or array_like, default=None
         The relative step size to use for numerical approximation of the derivatives. 
-        The absolute step size is computed as ``h = rel_step * sign(x) * max(1, abs(x))``,
+        The absolute step size is computed as ``h = rel_step * max(1, abs(x))``,
         possibly adjusted to fit into the bounds. Not used if finite_diff_abs_step is given.
-        If None (default), then it is selected automatically as 
-        ``_epsilon = sqrt(np.finfo(float).eps)`` approximately 1e-8.
+        By default, it is selected automatically as 
+        ``_epsilon = np.sqrt(np.finfo(float).eps)`` approximately 1e-8.
     callback : callable, default=None
-        Function to be called after each iteration. The function is called as
-        ``callback(x)``, where ``x`` is the current solution vector.
+        Function to be called after each major iteration. The function is called as
+        ``callback(x)``, where ``x`` is the optimization variable vector from the current major iteration.
     save_itr : {None, 'all', 'major'}, default=None
         If 'all', all iterations are saved. If 'major', only major iterations are saved.
         By default, save_itr is None, and no iterations are saved.
     summary_filename : str, default='slsqp.out'
         Name of the file to save the summary of the optimization process. 
         By default, the file is saved as 'slsqp_summary.out'.
-    save_filename : str, default='slsqp.hdf5'
+    save_filename : str, default='slsqp_recorder.hdf5'
         Name of the file to save the iterations. 
         By default, the file is saved as 'slsqp_recorder.hdf5'.
     save_vars : list, default=['x', 'objective', 'optimality', 'feasibility', 'step', 'mode', 'iter', 'majiter', 'ismajor']
@@ -286,6 +287,12 @@ def optimize(x0, obj=None, grad=None,
     """
     main_start = time.time()
 
+    if (obj is None) and (con is None):
+        raise ValueError("At least one of the objective or constraint functions must be defined.")
+    
+    if x0 is None:
+        raise ValueError("Some initial guess 'x0' must be provided to inform the optimizer about the number of optimization variables n.")
+                         
     if visualize:
         if not isinstance(visualize_vars, (list, str)):
             raise TypeError("visualize_vars must be a list of strings or a string.")
@@ -333,7 +340,22 @@ def optimize(x0, obj=None, grad=None,
         
     if warm_start:
         print(f"Warm starting from previous optimization solution x from {load_filename}...")
-        x = read_file['results']['x'][()]
+        if 'results' in read_file.keys():
+            x = read_file['results']['x'][()]
+        else:
+            print(f"No results found for warm-start in {load_filename}. Trying to load the last iteration...")
+            warm_start_success = False
+            num_saves = len(read_file.keys()) # = number of iter/majiter - 1 (since results were not found and counting starts from 0th iteration)
+            for k in range(num_saves-1, -1, -1):
+                if f'iter_{k}' in read_file.keys():
+                    x = read_file[f'iter_{k}']['x'][()]
+                    warm_start_success = True
+                    print(f"Success loading x from iteration {k} for warm-start.")
+                    break
+            if not warm_start_success:
+                raise ValueError(f"No iterations found in {load_filename}. Cannot perform warm start.")
+
+            x = read_file['iter_0']['x'][()]
         if len(x) != len(x0.flatten()):
             raise ValueError(f"Given x0 and saved x do not have the same length. Expected {len(x0)} but got {len(x)} from {load_filename}.")
 
@@ -358,6 +380,9 @@ def optimize(x0, obj=None, grad=None,
         xl = np.full(n, -np.inf)
     if xu is None:
         xu = np.full(n, np.inf)
+
+    xl = np.copy(xl)  # Copied so that the original is not modified, if used later by the user
+    xu = np.copy(xu)  # Copied so that the original is not modified, if used later by the user
 
     # Check and update xl and xu to match the size of x0
     xl = check_update_scalar(xl, 'xl', n, 'optimization variables x0')
@@ -604,6 +629,10 @@ def optimize(x0, obj=None, grad=None,
         visualizer.update_plot(out_dict)
 
     # Scaler check and initialization
+    import copy
+    x_scaler   = copy.copy(x_scaler)     # Copied so that the original is not modified, if used later by the user
+    con_scaler = copy.copy(con_scaler)   # Copied so that the original is not modified, if used later by the user
+    obj_scaler = copy.copy(obj_scaler)   # Copied so that the original is not modified, if used later by the user
     x_scaler   = check_update_scalar(x_scaler, 'x_scaler', n, 'optimization variables x0')
     con_scaler = check_update_scalar(con_scaler, 'con_scaler', la, 'constraints con(x)') # size of (la,)
     obj_scaler = check_update_scalar(obj_scaler, 'obj_scaler', 1, 'objective function f(x)')[0]
@@ -741,16 +770,16 @@ def optimize(x0, obj=None, grad=None,
     # Optimization loop complete. Print summary if iprint >= 1
     if iprint >= 1:
         print(exit_modes[int(mode)] + "    (Exit mode " + str(mode) + ')')
-        print("            Final objective value                : {:.6f}".format(fx))
-        print("            Final optimality                     : {:.6f}".format(out_dict['optimality']))
-        print("            Final feasibility                    : {:.6f}".format(out_dict['feasibility']))
-        print("            Number of major iterations           : {:.0f}".format(majiter))
+        print("            Final objective value                : {:.6e}".format(fx))
+        print("            Final optimality                     : {:.6e}".format(out_dict['optimality']))
+        print("            Final feasibility                    : {:.6e}".format(out_dict['feasibility']))
+        print("            Number of major iterations           : {:d}".format(majiter))
         if hot_start:
-            print(f"            Num fun evals (reused in hotstart)   : {prob.nfev:.0f} ({hot_nfev:.0f})")
-            print(f"            Num deriv evals (reused in hotstart) : {prob.ngev:.0f} ({hot_ngev:.0f})")
+            print(f"            Num fun evals (reused in hotstart)   : {prob.nfev:d} ({hot_nfev:.0f})")
+            print(f"            Num deriv evals (reused in hotstart) : {prob.ngev:d} ({hot_ngev:.0f})")
         else:
-            print("            Number of function evaluations       : {:.0f}".format(prob.nfev))
-            print("            Number of derivative evaluations     : {:.0f}".format(prob.ngev))
+            print("            Number of function evaluations       : {:d}".format(prob.nfev))
+            print("            Number of derivative evaluations     : {:d}".format(prob.ngev))
         print("            Average Derivative evaluation time   : {:.6f} s per evaluation".format(prob.fev_time/prob.nfev))
         print("            Average Function evaluation time     : {:.6f} s per evaluation".format(prob.gev_time/prob.ngev))
         print("            Total Function evaluation time       : {:.6f} s [{:6.2f}%]".format(prob.fev_time, prob.fev_time/total_time*100))
@@ -775,8 +804,9 @@ def optimize(x0, obj=None, grad=None,
     results['num_majiter'] = int(majiter)
     results['nfev'] = prob.nfev
     results['ngev'] = prob.ngev
-    results['nfev_reused (hotstart)'] = hot_nfev if hot_start else 0
-    results['ngev_reused (hotstart)'] = hot_ngev if hot_start else 0
+    if hot_start:
+        results['nfev_reused_in_hotstart'] = hot_nfev if hot_start else 0
+        results['ngev_reused_in_hotstart'] = hot_ngev if hot_start else 0
     results['fev_time'] = prob.fev_time
     results['gev_time'] = prob.gev_time
     results['optimizer_time'] = opt_time
@@ -786,6 +816,9 @@ def optimize(x0, obj=None, grad=None,
     results['status'] = int(mode)
     results['message'] = exit_modes[int(mode)]
     results['success'] = (mode == 0)
+    results['summary_filename'] = summary_filename
+    if save_itr is not None:
+        results['save_filename'] = save_filename
 
     if save_itr is not None:
         file.create_group('results')
@@ -795,79 +828,5 @@ def optimize(x0, obj=None, grad=None,
     
     return results
 
-
-
 if __name__ == "__main__":
-    import numpy as np
-
-    def obj(x):
-        return np.sum(x**2)
-    def grad(x):
-        return 2*x  
-    def con(x):
-        return x[:4] - 0.2
-    def jac(x):
-        return np.eye(4, 10)  
-    def coneq(x):
-        return x[:5] - 0.2
-    def jaceq(x):
-        return np.eye(5, 10)
-    
-    x0 = np.ones(10)
-    res1 = optimize(x0, obj, grad=grad, summary_filename='uncon_slsqp.out', x_scaler=0.02, obj_scaler=100., acc=1.0E-6)
-    res2 = optimize(x0, obj, summary_filename='uncon_fd_slsqp.out')
-
-    res3 = optimize(x0, obj, grad=grad, xl=0.2, xu =0.9, summary_filename='bdcon_slsqp.out', x_scaler=0.02, obj_scaler=100., acc=1.0E-6)
-    res4 = optimize(x0, obj, xl=0.2, xu =0.9, summary_filename='bdcon_fd_slsqp.out', x_scaler=0.02*np.ones(10), obj_scaler=100., acc=1.0E-6)
-
-    res5 = optimize(x0, obj, grad=grad, con=con, jac=jac, summary_filename='ineq_slsqp.out', save_filename='ineq_slsqp.hdf5', save_itr='major', save_vars=['x', 'objective', 'majiter'], x_scaler=0.02, obj_scaler=100., con_scaler=0.02)
-    res6 = optimize(x0, obj, con=con, summary_filename='ineq_fd_slsqp.out', save_filename='ineq_fd_slsqp.hdf5', save_itr='major', save_vars=['x', 'objective', 'majiter'], x_scaler=0.02*np.ones(10), obj_scaler=100., con_scaler=0.02*np.ones(4))
-    
-    res7 = optimize(x0, obj, grad=grad, con=coneq, jac=jaceq, meq=5, summary_filename='eq_slsqp.out', save_itr='all', save_filename='eq_slsqp.hdf5', x_scaler=0.02, obj_scaler=100., con_scaler=0.02, visualize=True, visualize_vars=['objective', 'optimality', 'feasibility', 'x[0]', 'constraints[0]', 'gradient[0]', 'multipliers[0]', 'jacobian[0,0]'])
-    res8 = optimize(x0, obj, con=coneq, meq=5, summary_filename='eq_fd_slsqp.out', save_itr='all', save_filename='eq_fd_slsqp.hdf5', x_scaler=0.02*np.ones(10,), obj_scaler=100., con_scaler=0.02*np.ones(5))
-
-    options = get_default_options()
-    options['obj'] = obj
-    options['grad'] = grad
-    options['con'] = con
-    options['jac'] = jac
-    # options['visualize'] = True
-    # options['visualize_vars'] = ['objective', 'optimality', 'feasibility']
-    res9 = optimize(x0, **options)
-
-    options  = {'obj': obj, 'grad': grad, 'con': con, 'jac': jac}
-    # options |= {'summary_filename': 'options_slsqp.out', 'x_scaler': 0.02, 'obj_scaler': 100., 'con_scaler': 0.02}
-
-    # Normal start
-    options.update({'summary_filename': 'options_slsqp.out', 'x_scaler': 0.02, 'obj_scaler': 100., 'con_scaler': 0.02})
-    options.update({'save_itr': 'all', 'save_filename': 'options_slsqp.hdf5', 'save_vars': ['x', 'objective', 'optimality', 'feasibility', 'constraints', 'gradient', 'multipliers', 'jacobian']})
-    res10 = optimize(x0, **options)
-
-    # Warm start
-    options.update({'summary_filename': 'options_slsqp_warm.out', 'x_scaler': 0.02, 'obj_scaler': 100., 'con_scaler': 0.02})
-    options.update({'warm_start': True, 'load_filename':'options_slsqp.hdf5'})
-    options.update({'save_itr': 'major', 'save_filename': 'options_slsqp_warm.hdf5', 'save_vars': ['x', 'objective', 'optimality', 'feasibility', 'constraints', 'gradient', 'multipliers', 'jacobian']})
-
-    # Hot start
-    # options.update({'summary_filename': 'options_slsqp_hot.out', 'x_scaler': 0.02, 'obj_scaler': 100., 'con_scaler': 0.02})
-    # options.update({'hot_start': True, 'load_filename':'options_slsqp.hdf5'})
-    # options.update({'save_itr': 'major', 'save_filename': 'options_slsqp_hot.hdf5', 'save_vars': ['x', 'objective', 'optimality', 'feasibility', 'constraints', 'gradient', 'multipliers', 'jacobian']})
-
-    x0 = np.ones(10) * 0.5
-    res11 = optimize(x0, **options)
-
-
-    def obj(x):
-        return np.sum(x**4)
-    def grad(x):
-        return 4 * x**3
-    def con(x):
-        return np.array([x[0] + x[1] - 1., x[0] - x[1] - 1.])
-    def jac(x):
-        return np.array([[1., 1.], [1., -1.]])
-    meq = 1
-    x0 = np.array([10., 25.])
-    xl = np.array([0., -np.inf])
-
-    res12 = optimize(x0, obj, grad=grad, con=con, jac=jac, meq=meq, xl =xl, summary_filename='lag_slsqp.out', save_itr='all', save_filename='lag_slsqp.hdf5', visualize=True, visualize_vars=['objective', 'optimality', 'feasibility', 'x[0]', 'constraints[0]', 'gradient[0]', 'multipliers[0]', 'multipliers[1]'])
-    print(res12['x'])
+    pass
