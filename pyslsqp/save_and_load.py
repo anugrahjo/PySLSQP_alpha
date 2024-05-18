@@ -35,7 +35,7 @@ def save_iteration(file, iter, vars, out_dict):
     
 def print_dict_as_table(data):
     """
-    Print a dictionary as a table.
+    Print any input dictionary as a table.
 
     Parameters
     ----------
@@ -47,16 +47,16 @@ def print_dict_as_table(data):
         print(f"        {key:24} : {value}")
     print("--------------------------------------------------")
     
-def print_file_contents(file_path):
+def print_file_contents(filepath):
     '''
     Print the contents of the saved file.
     
     Parameters
     ----------
-    file_path : str
+    filepath : str
         Path to the saved file.        
     '''
-    file = import_h5py_file(file_path)
+    file = import_h5py_file(filepath)
     print("Available data in the file:")
     print("---------------------------")
     try:
@@ -75,9 +75,9 @@ def print_file_contents(file_path):
 
 def load_variables(filepath, vars, itr_start=0, itr_end=-1, major_only=False):
     '''
-    Load specified variable iterates between itr_start and itr_end from the saved file.
+    Load specified variable iterates between ``itr_start`` and ``itr_end`` from the saved file.
     Returns a dictionary with the variable names as keys and list of variable iterates as values.
-    Note the variables at itr_start and itr_end are included in the output.
+    Note the variables at ``itr_start`` and ``itr_end`` are included in the output.
 
     Parameters
     ----------

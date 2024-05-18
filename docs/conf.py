@@ -12,14 +12,29 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../pyslsqp'))     # for autodoc
+sys.path.insert(0, os.path.abspath('../'))     # for autodoc
+
+import codecs
+
+def read(rel_path):
+    here = os.path.abspath(os.path.dirname(__file__))
+    with codecs.open(os.path.join(here, rel_path), 'r') as fp:
+        return fp.read()
+    
+def get_version(rel_path):
+    for line in read(rel_path).splitlines():
+        if line.startswith('__version__'):
+            delim = '"' if '"' in line else "'"
+            return line.split(delim)[1]
+    else:
+        raise RuntimeError("Unable to find version string.")
 
 # -- Project information -----------------------------------------------------
 
 project = 'PySLSQP'
 copyright = '2024, Anugrah'
 author = 'Anugrah'
-version = '0.1'
+version = get_version('../pyslsqp/__init__.py')
 # release = 0.1.0rtc
 
 
@@ -30,8 +45,8 @@ version = '0.1'
 # ones.
 extensions = [
     "sphinx_rtd_theme",
-    "autoapi.extension",
-    "sphinx.ext.autodoc",           # for auto generating API reference
+    # "autoapi.extension",
+    # "sphinx.ext.autodoc",           # for auto generating API reference
     "numpydoc",                 
     "sphinx_copybutton",            # allows copying code embedded in the docs rendered from .md or .ipynb files
     "myst_nb",                      # renders .md, .myst, .ipynb files
@@ -39,6 +54,10 @@ extensions = [
     # "sphinxcontrib.collections",    # adds files from outside src and executes functions before Sphinx builds
     "sphinxcontrib.bibtex",         # for references and citations
 ]
+
+autodoc_typehints = 'none'
+autosummary_generate = True
+# add_module_names = False
 
 # import sphinx as aa
 # print(aa.__version__)
@@ -57,16 +76,39 @@ myst_title_to_header = True
 myst_enable_extensions = ["dollarmath", "amsmath", "tasklist"]
 nb_execution_mode = 'off'
 
+# napoleon options
+# napoleon_use_ivar = False
+# napoleon_use_param = False
+
+
 # # autoapi options
-autoapi_dirs = ["../pyslsqp"]
-autoapi_root = 'src/autoapi'
-autoapi_type = 'python'
-autoapi_file_patterns = ['*.py', '*.pyi']
-autoapi_options = [ 'members', 'undoc-members', 'private-members', 'show-inheritance', 
-                   'show-module-summary', 'special-members', 'imported-members', ]
-autoapi_add_toctree_entry = False
-autoapi_member_order = 'groupwise'
-autoapi_python_class_content = 'class' # 'both' or '__init'
+# autoapi_dirs = ["../pyslsqp"]
+# autoapi_root = 'src/autoapi'
+# autoapi_type = 'python'
+# autoapi_file_patterns = ['*.py', '*.pyi']
+# autoapi_options = [ 'members', 'undoc-members', 'private-members', 'show-inheritance', 
+#                    'show-module-summary', 
+#                    'special-members', 'imported-members', ]
+# autoapi_add_toctree_entry = False
+# autoapi_member_order = 'groupwise'
+# autoapi_python_class_content = 'class' # 'both' or '__init'
+# # autoapi_template_directory = '_templates/autoapi'
+# # autoapi_keep_files=True
+# autoapi_generate_api_docs=False
+# autoapi_ignore = ['*old_examples*']
+# # autoapi options
+
+# def skip_stdop_modules(app, what, name, obj, skip, options):
+#     if name.startswith('csdl_alpha.src.operations.') and what == 'module':
+#         print(app, what, name, obj, skip, options)
+#         skip = True
+#     # if name == 'csdl_alpha.src.operations':
+#     #     skip = True
+#     return skip
+
+
+# def setup(sphinx):
+#     sphinx.connect("autoapi-skip-member", skip_stdop_modules)
 
 root_doc = 'index'
 

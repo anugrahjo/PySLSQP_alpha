@@ -127,7 +127,7 @@ def check_load_variables(read_file, iter, x, vars):
 
 def get_default_options():
     """
-    Get the default options for the SLSQP algorithm.
+    Returns the default options for the ``optimize()`` function as a dictionary.
     """
     options = {
         'obj': None,
@@ -175,23 +175,28 @@ def optimize(x0, obj=None, grad=None,
     Kraft. The wrapper provides a slightly modified interface to the
     optimization problem and many additional features, compared to the Scipy wrapper.
 
-    This function solves the general nonlinear programming problem: 
+    This function solves the general nonlinear programming problem:
+    ::
             minimize            f(x)
             subject to          c_i(x) = 0,                 i = 1,...,meq
+
                                 c_i(x) >= 0,                i = meq+1,...,m
+
                                 xl_i <= x_i <= xu_i ,       i = 1,...,n
+
     where x is a vector of variables with size n, f(x) is the objective,
     c(x) is the constraint function, and xl and xu are vectors of lower and
     upper bounds, respectively. The first meq constraints are equalities
     while the remaining (m - meq) constraints are inequalities.
 
-
     Parameters
     ----------
     x0 : np.ndarray
         Initial guess for the optimization variables. 
-        Array of real elements of size (n,), where 'n' is the
+        Array of real elements of size `(n,)`, where 'n' is the
         number of independent variables.
+        ``x0`` is a necessary argument (unlike other arguments which are optional) 
+        to inform the optimizer about the number of optimization variables.
     obj : callable
         Objective function to be minimized. The function is called as
         ``obj(x)``, where ``x`` is the array of independent variables.
@@ -199,48 +204,48 @@ def optimize(x0, obj=None, grad=None,
         Vector-valued constraint function of size m. 
         The function is called as ``con(x)``, where ``x`` is 
         the array of optimization variables.
-        The first meq constraints are treated as equality constraints,
-        while the remaining m - meq constraints are treated as
+        The first `meq` constraints are treated as equality constraints,
+        while the remaining `(m - meq)` constraints are treated as
         inequality constraints.
     xl : np.ndarray or scalar, default=None
-        Lower bounds on optimization variables. Defaults to None, in which
-        case bounds are assumed to be -np.inf.
+        Lower bounds on optimization variables. Defaults to `None`, in which
+        case bounds are assumed to be ``-np.inf``.
         xl can be a scalar, in which case all variables have the same lower
-        bound, or an array of real elements of size (n,).
+        bound, or an array of real elements of size `(n,)`.
     xu : np.ndarray or scalar, default=None
-        Upper bounds on optimization variables. Defaults to None, in which
-        case bounds are assumed to be np.inf.
+        Upper bounds on optimization variables. Defaults to `None`, in which
+        case bounds are assumed to be ``np.inf``.
         xu can be a scalar, in which case all variables have the same upper
-        bound, or an array of real elements of size (n,).
+        bound, or an array of real elements of size (`n,)`.
     x_scaler : float or np.ndarray, default=1.0
         Factor by which the optimization variables are scaled before sending to SLSQP.
         If float, all variables are scaled by the same factor.
-        If np.ndarray of size (n,), each variable is scaled by the corresponding factor.
+        If np.ndarray of size `(n,)`, each variable is scaled by the corresponding factor.
     obj_scaler : float, default=1.0
         Factor by which the objective function value is scaled before sending to SLSQP.
     con_scaler : float or np.ndarray, default=1.0
         Factor by which the constraint function values are scaled before sending to SLSQP.
         If float, all constraints are scaled by the same factor.
-        If np.ndarray of size (m,), each constraint is scaled by the corresponding factor.
+        If np.ndarray of size `(m,)`, each constraint is scaled by the corresponding factor.
     meq : int, default=0
         The number of equality constraints. Defaults to 0.
     grad : callable, default=None
-        Gradient of the objective function. If None, the gradient will be
+        Gradient of the objective function. If `None`, the gradient will be
         approximated using finite differences.
     jac : callable, default=None
-        Jacobian of the constraint function. If None, the Jacobian will be
+        Jacobian of the constraint function. If `None`, the Jacobian will be
         approximated using finite differences.
     maxiter : int, default=100
         Maximum number of iterations.
     acc : float, default=1.0E-6
         abs(acc) is the stopping criterion and controls the final accuracy.
-        If acc < 0, a maximization problem is solved.
+        If ``acc`` < 0, a maximization problem is solved.
         Otherwise, a minimization problem is solved.
     iprint : int, default=1
         Controls the verbosity of the SLSQP algorithm. 
-        Set iprint <= 0 to suppress all console outputs.
-        Set iprint  = 1 to print only the final results upon completion.
-        Set iprint >= 2 to print the status of each major iteration and the final results.
+        Set ``iprint <= 0`` to suppress all console outputs.
+        Set ``iprint  = 1`` to print only the final results upon completion.
+        Set ``iprint >= 2`` to print the status of each major iteration and the final results.
     finite_diff_abs_step : None or array_like, default=None
         The absolute step size to use for numerical approximation of the derivatives. 
         If None (default), then step is selected using finite_diff_rel_step.
@@ -255,16 +260,16 @@ def optimize(x0, obj=None, grad=None,
         ``callback(x)``, where ``x`` is the optimization variable vector from the current major iteration.
     save_itr : {None, 'all', 'major'}, default=None
         If 'all', all iterations are saved. If 'major', only major iterations are saved.
-        By default, save_itr is None, and no iterations are saved.
+        By default, ``save_itr`` is None, and no iterations are saved.
     summary_filename : str, default='slsqp.out'
         Name of the file to save the summary of the optimization process. 
-        By default, the file is saved as 'slsqp_summary.out'.
+        By default, the file is saved as ``'slsqp_summary.out'``.
     save_filename : str, default='slsqp_recorder.hdf5'
         Name of the file to save the iterations. 
-        By default, the file is saved as 'slsqp_recorder.hdf5'.
+        By default, the file is saved as ``'slsqp_recorder.hdf5'``.
     save_vars : list, default=['x', 'objective', 'optimality', 'feasibility', 'step', 'mode', 'iter', 'majiter', 'ismajor']
         List of variables to save. The full list of variables available are 
-        ['x', 'objective', 'optimality', 'feasibility', 'step', 'mode', 'iter', 'majiter', 'ismajor', 'constraints', 'gradient', 'multipliers', 'jacobian']
+        ``['x', 'objective', 'optimality', 'feasibility', 'step', 'mode', 'iter', 'majiter', 'ismajor', 'constraints', 'gradient', 'multipliers', 'jacobian']``.
     warm_start : bool, default=False
         If True, the optimization algorithm will use the previous solution from the last optimization as the initial guess.
     hot_start : bool, default=None
@@ -275,15 +280,15 @@ def optimize(x0, obj=None, grad=None,
         and the optimization process was interrupted in a prior run.
     load_filename : str, default=None
         Name of the file to load the previous optimization solution or iterates for warm or hot start.
-        If None, the `load_filename` is assumed to be the same as the save_filename.
-        If `load_filename` is same as the provided `save_filename` will be updated as:
+        If None, the ``load_filename`` is assumed to be the same as the save_filename.
+        If ``load_filename`` is same as the provided ``save_filename`` will be updated as:
         'save_filename without extension' + '_new.hdf5'.
     visualize : bool, default=False
         Set to True to visualize the optimization process.
         Only major iterations are visualized.
     visualize_vars : list, default=['objective', 'optimality', 'feasibility']
         List of scalar variables to visualize. Available variables are
-        ['x[i]', 'objective', 'optimality', 'feasibility', 'constraints[i]', 'gradient[i]', 'multipliers[i]', 'jacobian[i,j]']
+        ``['x[i]', 'objective', 'optimality', 'feasibility', 'constraints[i]', 'gradient[i]', 'multipliers[i]', 'jacobian[i,j]']``.
     """
     main_start = time.time()
 

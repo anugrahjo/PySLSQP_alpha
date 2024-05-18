@@ -25,7 +25,7 @@ pip install pyslsqp
 
 To install the latest commit from the main branch, run
 ```sh
-pip install git+https://github.com/LSDOlab/PySLSQP.git@main
+pip install git+https://github.com/anugrahjo/PySLSQP.git@main
 ```
 <!-- Note that this will compile the package locally on your computer.
 Therefore, this is  not recommended unless you are a developer and wants to edit the package for your use. -->
