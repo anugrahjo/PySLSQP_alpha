@@ -18,3 +18,6 @@ astroid==2.15.5
 setuptools
 wheel
 twine
+
+ninja>=1.11
+meson>=1.4
