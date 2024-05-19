@@ -32,16 +32,19 @@ def build_meson():
 
     for root, dirs, files in os.walk(build_path):
         for file in files:
-            if file.endswith('.so') or file.endswith(('.dll.a','.pyd')):
+            # For windows
+            # if file.endswith('.so') or file.endswith(('.dll.a','.pyd')):
+            if file.endswith('.so'):
                 from_path = os.path.join(root, file)
                 to_path = os.path.join(target_path, file)
                 shutil.copy(from_path, to_path)
-        for dir in dirs:
-            if dir.endswith('.pyd.p'):
-                from_path = os.path.join(root, dir)
-                to_path = os.path.join(target_path, dir)
-                if not os.path.exists(to_path):
-                    shutil.copytree(from_path, to_path)
+        # For windows
+        # for dir in dirs:
+        #     if dir.endswith('.pyd.p'):
+        #         from_path = os.path.join(root, dir)
+        #         to_path = os.path.join(target_path, dir)
+        #         if not os.path.exists(to_path):
+        #             shutil.copytree(from_path, to_path)
 
 if __name__ == "__main__":
     build_meson()
