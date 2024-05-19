@@ -32,7 +32,7 @@ def build_meson():
 
     for root, dirs, files in os.walk(build_path):
         for file in files:
-            if file.endswith('.so'):
+            if file.endswith('.so') or file.endswith('.pyd'):
                 from_path = os.path.join(root, file)
                 to_path = os.path.join(target_path, file)
                 shutil.copy(from_path, to_path)
