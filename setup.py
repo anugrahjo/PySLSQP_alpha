@@ -32,7 +32,7 @@ def build_meson():
 
     for root, dirs, files in os.walk(build_path):
         for file in files:
-            if file.endswith('.so') or file.endswith(('.dll.a','.pyd', '.pyd.p')):
+            if file.endswith('.so') or file.endswith(('.dll.a','.pyd')):
                 from_path = os.path.join(root, file)
                 to_path = os.path.join(target_path, file)
                 shutil.copy(from_path, to_path)
@@ -43,6 +43,7 @@ def build_meson():
                 to_path = os.path.join(target_path, dir)
                 print(to_path)
                 shutil.copytree(from_path, to_path)
+                break
 
 if __name__ == "__main__":
     build_meson()
