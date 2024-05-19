@@ -104,8 +104,9 @@ jobs:
         if exist requirements.txt pip3 install -r requirements.txt
         pip install -e .
         echo %PATH%
-        echo %PYTHONPATH%
         echo "PATH=%PATH%;%CD%\pyslsqp" >> %GITHUB_ENV%
+        echo "PATH=%PATH%;%CD%\meson_builddir\pyslsqp" >> %GITHUB_ENV%
+        echo %PATH%
         cat meson_builddir/meson-logs/meson-log.txt
         ls meson_builddir/pyslsqp
         ls pyslsqp
