@@ -105,6 +105,7 @@ jobs:
         pip install -e .
         cat meson_builddir/meson-logs/meson-log.txt
         ls meson_builddir/pyslsqp
+        ls pyslsqp
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
     - name: Test with pytest
