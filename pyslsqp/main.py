@@ -13,7 +13,7 @@ The original algorithm is described in the following papers:
 """
 
 import warnings
-import os
+import os, sys
 import time
 import numpy as np
 from numpy import array, isfinite, linalg
@@ -21,7 +21,11 @@ from numpy import array, isfinite, linalg
 _epsilon = np.sqrt(np.finfo(float).eps)
 
 from .save_and_load import save_iteration
-from ._slsqp import slsqp
+if sys.platform in ['win32', 'cygwin']:
+    from _slsqp import slsqp
+else:
+    from ._slsqp import slsqp
+# from ._slsqp import slsqp
 
 from .visualize import Visualizer
 # from visualize_plotly import Visualizer
