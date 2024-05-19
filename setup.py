@@ -30,6 +30,7 @@ def build_meson():
     build_path = os.path.join(os.getcwd(), builddir, 'pyslsqp')
     target_path = os.path.join(os.getcwd(), 'pyslsqp')
 
+    dir_found = False
     for root, dirs, files in os.walk(build_path):
         for file in files:
             if file.endswith('.so') or file.endswith(('.dll.a','.pyd')):
@@ -37,13 +38,13 @@ def build_meson():
                 to_path = os.path.join(target_path, file)
                 shutil.copy(from_path, to_path)
         for dir in dirs:
-            if dir.endswith('.pyd.p'):
+            if dir.endswith('.pyd.p') and dir_found == False:
                 from_path = os.path.join(root, dir)
                 print(from_path)
                 to_path = os.path.join(target_path, dir)
                 print(to_path)
                 shutil.copytree(from_path, to_path)
-                break
+                dir_found = True
 
 if __name__ == "__main__":
     build_meson()
