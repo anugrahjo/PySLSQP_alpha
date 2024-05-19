@@ -103,22 +103,8 @@ jobs:
         python -m pip install --upgrade pip
         if exist requirements.txt pip3 install -r requirements.txt
         pip install -e .
-        echo %PATH%
-
-    - name: Update PATH
-      shell: cmd
-      run: |
-        echo PATH=%PATH%;%CD%\pyslsqp >> %GITHUB_ENV%
-        echo PATH=%PATH%;%CD%\meson_builddir\pyslsqp >> %GITHUB_ENV%
-
-    - name: Check new path
-      shell: cmd
-      run: |  
-        echo %PATH%
-    
-    - name: Check files
-      run: |
         cat meson_builddir/meson-logs/meson-log.txt
+        cat meson_builddir/pyslsqp/_slsqp.cp310-win_amd64.pyd
         ls meson_builddir/pyslsqp
         ls pyslsqp
 

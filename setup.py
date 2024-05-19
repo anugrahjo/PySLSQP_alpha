@@ -36,6 +36,11 @@ def build_meson():
                 from_path = os.path.join(root, file)
                 to_path = os.path.join(target_path, file)
                 shutil.copy(from_path, to_path)
+        for dir in dirs:
+            if dir.endswith('.pyd.p'):
+                from_path = os.path.join(root, dir)
+                to_path = os.path.join(target_path, dir)
+                shutil.copy(from_path, to_path)
 
 if __name__ == "__main__":
     build_meson()

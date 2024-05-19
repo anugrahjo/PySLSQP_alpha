@@ -21,11 +21,7 @@ from numpy import array, isfinite, linalg
 _epsilon = np.sqrt(np.finfo(float).eps)
 
 from .save_and_load import save_iteration
-if sys.platform in ['win32', 'cygwin']:
-    from _slsqp import slsqp
-else:
-    from ._slsqp import slsqp
-# from ._slsqp import slsqp
+from ._slsqp import slsqp
 
 from .visualize import Visualizer
 # from visualize_plotly import Visualizer
