@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        # os: [ubuntu-latest, windows-latest, macOS-latest]
         # python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         python-version: [ "3.10",]
 
@@ -72,7 +72,6 @@ jobs:
         brew reinstall gcc
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
         pip install -e .
-        cat meson_builddir/meson-logs/meson-log.txt
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
     - name: Test with pytest
@@ -105,6 +104,7 @@ jobs:
         if exist requirements.txt pip3 install -r requirements.txt
         pip install -e .
         cat meson_builddir/meson-logs/meson-log.txt
+        ls meson_builddir/pyslsqp
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
     - name: Test with pytest
