@@ -115,6 +115,9 @@ jobs:
       shell: cmd
       run: |  
         echo %PATH%
+    
+    - name: Check files
+      run: |
         cat meson_builddir/meson-logs/meson-log.txt
         ls meson_builddir/pyslsqp
         ls pyslsqp
