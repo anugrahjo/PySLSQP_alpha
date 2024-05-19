@@ -104,8 +104,12 @@ jobs:
         if exist requirements.txt pip3 install -r requirements.txt
         pip install -e .
         echo %PATH%
+
+    - name: Update PATH
+      run: |
         echo "PATH=%PATH%;%CD%\pyslsqp" >> %GITHUB_ENV%
         echo "PATH=%PATH%;%CD%\meson_builddir\pyslsqp" >> %GITHUB_ENV%
+        
     - name: Check new path
       shell: cmd
       run: |  
