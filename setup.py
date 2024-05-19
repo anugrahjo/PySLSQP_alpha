@@ -42,7 +42,7 @@ def build_meson():
                 print(from_path)
                 to_path = os.path.join(target_path, dir)
                 print(to_path)
-                shutil.copy(from_path, to_path)
+                shutil.copytree(from_path, to_path)
 
 if __name__ == "__main__":
     build_meson()
