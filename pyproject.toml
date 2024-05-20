@@ -4,7 +4,6 @@ requires = ['meson-python', 'setuptools', 'wheel', 'twine', 'numpy', 'scipy', 'n
 
 [project]
 name = 'pyslsqp'
-version = '0.0.1'
 description = 'PySLSQP project'
 readme = 'README.md'
 requires-python = '>=3.8'
@@ -12,3 +11,7 @@ license = {file = 'LICENSE.txt'}
 authors = [
   {name = 'Anugrah Jo Joshy', email = 'ajoshy.ucsd@gmail.com'},
 ]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "pyslsqp.__version__"}
