@@ -4,7 +4,7 @@ The SLSQP algorithm is designed to solve nonlinear programming (NLP) problems.
 PySLSQP is a Python package that wraps the original SLSQP algorithm 
 implemented in Fortran by Dieter Kraft {cite:p}`kraft1988software, kraft1994algorithm`.
 While the Fortran code in PySLSQP is sourced from 
-[`scipy.optimize.minimize`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html) 
+[`scipy.optimize.minimize`](https://docs.scipy.org/doc/scipy/reference/optimize.minimize-slsqp.html), 
 {cite:p}`virtanen2020scipy`, 
 PySLSQP extends its functionality 
 by offering new features for further analysis of optimization problems, 

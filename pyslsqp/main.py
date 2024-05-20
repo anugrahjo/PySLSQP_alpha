@@ -1,8 +1,12 @@
 """
 This module provides a wrapper for the Sequential Least Squares Programming
 (SLSQP) optimization algorithm, originally implemented by Dieter Kraft.
-The wrapper provides a slightly modified interface to the optimization problem 
+The wrapper provides a modified interface to the optimization problem 
 and many additional features compared to the SciPy implementation.
+Certain portions of the code in this file, comprising only a few lines, 
+are adapted from the SciPy implementation and are licensed under the 
+BSD 3-Clause "New" or "Revised" License, 
+as provided in the file: "./slsqp/LICENSE.txt".
 
 The original algorithm is described in the following papers:
 1. Dieter Kraft, "A software package for sequential quadratic programming",
@@ -376,7 +380,7 @@ def optimize(x0, obj=None, grad=None,
         
         print(f"Hot starting using saved x, objective, constraints, gradient, and jacobian from {load_filename}...")
 
-    # n: number of independent variables
+    # n: number of optimization variables
     n = len(x)
 
     if xl is None:
@@ -490,15 +494,13 @@ def optimize(x0, obj=None, grad=None,
     prob = Problem(x, _obj, _con, _grad, _jac)
     fx, c = prob._funcs(x)
     
-    # Set the parameters that SLSQP will need
+    # Compute the constants that Fortran SLSQP module needs
     # m: total number of constraints
     m = len(c) if con is not None else 0
-    # meq, mieq: number of equality and inequality constraints
-    mieq = m - meq
     # la: The number of constraints, or 1 if there are no constraints
-    la = array([1, m]).max()
+    la = max(1, m)
 
-    # Define the workspaces for SLSQP
+    # Allocate the array workspaces needed by the Fortran SLSQP module
     n1 = n + 1
     mineq = m - meq + n1 + n1
     len_w = (3*n1+m)*(n1+1)+(n1-meq+1)*(mineq+2) + 2*mineq+(n1+mineq)*(n1-meq) \
@@ -507,7 +509,7 @@ def optimize(x0, obj=None, grad=None,
     w = np.zeros(len_w)
     jw = np.zeros(len_jw)
 
-    # Initialize the iteration counter and the mode value
+    # Set the accuracy as acc, the mode as 0, and the major iteration counter as maxiter
     mode = array(0, int)
     acc = array(acc, float)
     majiter = array(maxiter-1, int)

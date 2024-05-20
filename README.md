@@ -15,8 +15,9 @@
 The SLSQP algorithm is designed to solve nonlinear programming (NLP) problems.
 PySLSQP is a Python package that wrraps the original SLSQP algorithm 
 implemented in Fortran by Dieter Kraft.
-While the Fortran code is sourced from `scipy.optimize.minimize`, 
-PySLSQP extends its functionality 
+While the Fortran code is sourced from 
+[`scipy.optimize.minimize`](https://docs.scipy.org/doc/scipy/reference/optimize.minimize-slsqp.html), 
+PySLSQP extends its functionality
 by offering new features for further analysis of optimization problems, 
 thereby significantly improving the utility of the original algorithm.
 The prebuilt packages for various system architectures are available on PyPI for download, 
@@ -153,4 +154,4 @@ Please refer the [`CONTRIBUTING.md`](https://github.com/anugrahjo/PySLSQP_alpha/
 file for guidelines on how to contribute.
 
 ## License
-This project is licensed under the terms of the **BSD license**.
+This project is licensed under the terms of the [BSD 3-Clause "New" or "Revised" License](https://github.com/anugrahjo/PySLSQP_alpha/blob/main/LICENSE.txt).

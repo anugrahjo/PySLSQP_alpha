@@ -108,3 +108,6 @@ build the new documentation on your system by going into the `./docs` folder and
 This will build all the html pages locally and you can verify if the documentation was built as intended by
 opening the `docs/_build/html/index.html` on your web browser.
 
+## License
+By contributing to PySLSQP, you agree to make anything contributed to the repository available 
+under the [BSD 3-Clause "New" or "Revised" License](https://github.com/anugrahjo/PySLSQP_alpha/blob/main/LICENSE.txt).
