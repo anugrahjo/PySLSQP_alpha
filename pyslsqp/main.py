@@ -159,6 +159,7 @@ def get_default_options():
         'save_vars': ['x', 'objective', 'optimality', 'feasibility', 'step', 'iter', 'majiter', 'ismajor', 'mode'],
         'visualize': False,
         'visualize_vars': ['objective', 'optimality', 'feasibility'],
+        'keep_plot_open': False,
     }
 
     return options
@@ -171,7 +172,7 @@ def optimize(x0, obj=None, grad=None,
             finite_diff_abs_step=None, finite_diff_rel_step=_epsilon, 
             summary_filename='slsqp_summary.out', warm_start=False, hot_start=False, load_filename=None,
             save_itr=None, save_filename='slsqp_recorder.hdf5', save_vars=['x', 'objective', 'optimality', 'feasibility', 'step', 'iter', 'majiter', 'ismajor', 'mode'],
-            visualize=False, visualize_vars=['objective', 'optimality', 'feasibility']):
+            visualize=False, visualize_vars=['objective', 'optimality', 'feasibility'], keep_plot_open= False,):
     """
     Minimize a scalar function of one or more variables using Sequential
     Least Squares Programming (SLSQP).
@@ -291,6 +292,8 @@ def optimize(x0, obj=None, grad=None,
     visualize_vars : list, default=['objective', 'optimality', 'feasibility']
         List of scalar variables to visualize. Available variables are
         ``['x[i]', 'objective', 'optimality', 'feasibility', 'constraints[i]', 'gradient[i]', 'multipliers[i]', 'jacobian[i,j]']``.
+    keep_plot_open : bool, default=False
+        Set to True to keep the plot window open after the optimization process is complete.
     """
     main_start = time.time()
 
@@ -439,7 +442,7 @@ def optimize(x0, obj=None, grad=None,
     else:
         # gh11403 SLSQP sometimes exceeds bounds by 1 or 2 ULP, make sure this
         # doesn't get sent to the func/grad evaluator.
-        _obj = _clip_x_for_func(obj, xl, xu)
+        _obj = _clip_x_for_func(obj, lb, ub)
         if grad is None:
             # Note: FD grad() uses unclipped objective function to avoid errors in the finite difference calculation.
             # Note also that input x for grad() is already clipped and within bounds when it is called through _grad().
@@ -461,14 +464,14 @@ def optimize(x0, obj=None, grad=None,
                 fd_grad /= h
                 return fd_grad
 
-        _grad = _clip_x_for_func(grad, xl, xu)
+        _grad = _clip_x_for_func(grad, lb, ub)
 
     if con is None:
         print("No constraints defined. Running an unconstrained optimization problem...")
         _con = lambda x: np.array([0.], dtype=float)
         _jac = lambda x: np.zeros((1, n), dtype=float)
     else:
-        _con = _clip_x_for_func(con, xl, xu)
+        _con = _clip_x_for_func(con, lb, ub)
         if jac is None:
             # Note: FD jac() uses unclipped constraint function to avoid errors in the finite difference calculation.
             # Note also that input x for jac() is already clipped and within bounds when it is called through _jac().
@@ -489,7 +492,7 @@ def optimize(x0, obj=None, grad=None,
                 fd_jac /= h # Note: fd_jac has shape (m, n) and h has shape (n,) so broadcasting is done correctly
                 return fd_jac
             
-        _jac = _clip_x_for_func(jac, xl, xu)
+        _jac = _clip_x_for_func(jac, lb, ub)
 
     prob = Problem(x, _obj, _con, _grad, _jac)
     fx, c = prob._funcs(x)
@@ -762,13 +765,14 @@ def optimize(x0, obj=None, grad=None,
 
         majiter_prev = int(majiter)
 
+    vis_time = 0.0
+    vis_wait = 0.0
     if visualize:
-        visualizer.keep_plot()
         vis_time = visualizer.vis_time
-        vis_wait = visualizer.wait_time
-    else:
-        vis_time = 0.0
-        vis_wait = 0.0
+        if keep_plot_open:
+            visualizer.keep_plot()
+            vis_wait = visualizer.wait_time
+
     total_time = time.time() - main_start - vis_wait
     processing_time = total_time - prob.fev_time - prob.gev_time - vis_time - opt_time
 
@@ -802,7 +806,7 @@ def optimize(x0, obj=None, grad=None,
     results['objective'] = fx
     results['optimality'] = h1
     results['feasibility'] = h2
-    results['constraints'] = c
+    results['constraints'] = c[:m]
     results['multipliers'] = w[wref:wref+m]
     results['gradient'] = g[:-1]
     # results['jacobian'] = a[:, :-1]
