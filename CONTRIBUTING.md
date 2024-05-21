@@ -84,9 +84,11 @@ To run the tests, install `pytest` with
 ```sh
 pip install pytest
 ``` 
-and run
+and run any one of the following lines
 ```sh
-pytest
+pytest                       # standard testing
+pytest --disable-warnings    # tests without displaying warnings
+pytest -rP                   # tests while displaying print statements
 ```
 on the terminal or command line.
 
