@@ -20,4 +20,4 @@ twine
 ninja
 meson
 h5py
-matplotlib
+matplotlib >= 3.4.3, < 3.9
