@@ -3,14 +3,15 @@
 <!---
 [![Python](https://img.shields.io/pypi/pyversions/PySLSQP)](https://img.shields.io/pypi/pyversions/PySLSQP)
 [![Pypi](https://img.shields.io/pypi/v/PySLSQP)](https://pypi.org/project/PySLSQP/)
-[![Coveralls Badge][13]][14]
 [![PyPI version][10]][11]
 [![PyPI Monthly Downloads][12]][11]
 -->
 
-[![GitHub Actions Test Badge](https://github.com/anugrahjo/PySLSQP/actions/workflows/actions.yml/badge.svg)](https://github.com/anugrahjo/PySLSQP/actions)
-[![Forks](https://img.shields.io/github/forks/anugrahjo/PySLSQP.svg)](https://github.com/anugrahjo/PySLSQP/network)
-[![Issues](https://img.shields.io/github/issues/anugrahjo/PySLSQP.svg)](https://github.com/anugrahjo/PySLSQP/issues)
+[![GitHub Actions Test Badge](https://github.com/anugrahjo/PySLSQP_alpha/actions/workflows/actions.yml/badge.svg)](https://github.com/anugrahjo/PySLSQP_alpha/actions)
+[![Coveralls Badge](https://coveralls.io/repos/github/anugrahjo/PySLSQP_alpha/badge.svg?branch=main "Coverage Badge")](https://coveralls.io/github/anugrahjo/PySLSQP_alpha?branch=main "PySLSQP_alpha @Coveralls")
+[![Forks](https://img.shields.io/github/forks/anugrahjo/PySLSQP_alpha.svg)](https://github.com/anugrahjo/PySLSQP_alpha/network)
+[![Issues](https://img.shields.io/github/issues/anugrahjo/PySLSQP_alpha.svg)](https://github.com/anugrahjo/PySLSQP_alpha/issues)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/anugrahjo/PySLSQP_alpha/blob/main/LICENSE.txt)
 
 The SLSQP algorithm is designed to solve nonlinear programming (NLP) problems.
 PySLSQP is a Python package that wrraps the original SLSQP algorithm 

@@ -86,11 +86,16 @@ pip install pytest
 ``` 
 and run any one of the following lines
 ```sh
-pytest                       # standard testing
-pytest --disable-warnings    # tests without displaying warnings
-pytest -rP                   # tests while displaying print statements
+pytest                              # standard testing
+pytest --disable-warnings           # tests without displaying warnings
+pytest -rP                          # tests while displaying print statements
+pytest tests/ --cov=pyslsqp         # testing while also computing line coverage
+pytest --cov=pyslsqp --cov-branch   # testing while also computing branch coverage
+pytest --cov=pyslsqp --cov-report html    # detailed coverage report generated at htmlcov/index.html
+                                          # clicking specific files in the report shows 
+                                          # which lines were missed in testing
 ```
-on the terminal or command line.
+on the terminal or command line at the project root directory.
 
 ## Documentation
 After you have made your changes to the code and tested them successfully, make sure to add any
