@@ -299,6 +299,10 @@ def optimize(x0, obj=None, grad=None,
         Name of the file to save the plot.
     """
     main_start = time.time()
+    import copy
+
+    in_xl = copy.copy(xl)
+    in_xu = copy.copy(xu)
 
     if (obj is None) and (con is None):
         raise ValueError("At least one of the objective or constraint functions must be defined.")
@@ -397,7 +401,6 @@ def optimize(x0, obj=None, grad=None,
     if xu is None:
         xu = np.full(n, np.inf)
 
-    import copy
     xl = copy.copy(xl)  # Copied so that the original is not modified, if used later by the user
     xu = copy.copy(xu)  # Copied so that the original is not modified, if used later by the user
 
@@ -561,14 +564,27 @@ def optimize(x0, obj=None, grad=None,
             os.remove(save_filename)
         except FileNotFoundError:
             pass
+
+        # 'ismajor', 'iter', `majiter` are appended to the save_vars list by default to indicate if the iteration is a major iteration
+        if 'ismajor' not in save_vars:
+            save_vars.append('ismajor')
+        if 'iter' not in save_vars:
+            save_vars.append('iter')
+        if 'majiter' not in save_vars:
+            save_vars.append('majiter')
         
         file = h5py.File(save_filename, 'a')
         file.attrs['n'] = n
         file.attrs['m'] = m
         file.attrs['meq'] = meq
         
-        file.attrs['xl'] = lb
-        file.attrs['xu'] = ub
+        file.attrs['x0'] = x0
+        file.attrs['xl'] = in_xl if in_xl is not None else 'None (undefined)'
+        file.attrs['xu'] = in_xu if in_xu is not None else 'None (undefined)'
+
+        file.attrs['x_scaler'] = x_scaler
+        file.attrs['obj_scaler'] = obj_scaler
+        file.attrs['con_scaler'] = con_scaler
 
         file.attrs['maxiter'] = maxiter
         file.attrs['acc'] = acc
@@ -592,6 +608,8 @@ def optimize(x0, obj=None, grad=None,
             file.attrs['load_filename'] = 'None (undefined)'
         file.attrs['visualize'] = visualize
         file.attrs['visualize_vars'] = visualize_vars
+        file.attrs['keep_plot_open'] = keep_plot_open
+        file.attrs['save_figname'] = save_figname
 
     # mode is zero on entry, so call objective, constraints and gradients
     # there should be no func evaluations here because it's cached from prob
@@ -644,7 +662,6 @@ def optimize(x0, obj=None, grad=None,
         visualizer.update_plot(out_dict)
 
     # Scaler check and initialization
-    import copy
     x_scaler   = copy.copy(x_scaler)     # Copied so that the original is not modified, if used later by the user
     con_scaler = copy.copy(con_scaler)   # Copied so that the original is not modified, if used later by the user
     obj_scaler = copy.copy(obj_scaler)   # Copied so that the original is not modified, if used later by the user
@@ -674,10 +691,11 @@ def optimize(x0, obj=None, grad=None,
               alpha, f0, gs, h1, h2, h3, h4, t, t0, tol,
               iexact, incons, ireset, itermx, line,
               n1, n2, n3)
-        if majiter > majiter_prev and majiter != majiter_prev + 1:
-            print(f"Warning (SLSQP Bug): Major iteration counter jumped from {majiter_prev} to {majiter}. Resetting to {majiter_prev + 1}.")
-            majiter = majiter_prev + 1
         opt_time += time.time() - opt_start
+
+        if majiter > majiter_prev and majiter != majiter_prev + 1:
+            warnings.warn(f"SLSQP Bug: Major iteration counter jumped from {majiter_prev} to {majiter}. Resetting to {majiter_prev + 1}.")
+            majiter = majiter_prev + 1
 
         x = x_scaled / x_scaler
 
@@ -723,7 +741,7 @@ def optimize(x0, obj=None, grad=None,
                 majiter = int(majiter) + 1
             
         out_dict['iter'] = iter
-        out_dict['majiter'] = majiter
+        out_dict['majiter'] = majiter * 1 # Copy the value of majiter to out_dict
         out_dict['ismajor'] = True if majiter > majiter_prev else False
         out_dict['mode'] = mode
         out_dict['x'] = x
@@ -742,7 +760,7 @@ def optimize(x0, obj=None, grad=None,
 
         if majiter > majiter_prev:
             if save_itr == 'major':
-                save_iteration(file, majiter, save_vars, out_dict)
+                save_iteration(file, majiter*1, save_vars, out_dict)
             # call callback if major iteration has incremented
             if callback is not None:
                 callback(np.copy(x))
@@ -824,7 +842,7 @@ def optimize(x0, obj=None, grad=None,
     results['constraints'] = c[:m]
     results['multipliers'] = w[wref:wref+m]
     results['gradient'] = g[:-1]
-    # results['jacobian'] = a[:, :-1]
+    results['jacobian'] = a[:m, :-1]
     results['num_majiter'] = int(majiter)
     results['nfev'] = prob.nfev
     results['ngev'] = prob.ngev

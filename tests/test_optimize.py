@@ -259,7 +259,6 @@ def test_visualize():
         assert_almost_equal(res2['x'], [1., 3., 5., 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2], decimal=3)
 
 def test_warm_and_hot_start():
-    import os
     import numpy as np
     from numpy.testing import assert_almost_equal
     from pyslsqp import optimize
