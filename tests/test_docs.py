@@ -113,7 +113,7 @@ def test_basic_notebook():
     assert_array_almost_equal(results['objective'], 0.5)
     assert_array_almost_equal(results['x'], [0.5, 0.5], decimal=11)
     assert_array_almost_equal(results['optimality'], [7.682743e-16], decimal=11)
-    assert_array_almost_equal(results['feasibility'], [7.682743e-11], decimal=11)
+    assert_array_almost_equal(results['feasibility'], [3.84137e-14], decimal=11)
     assert_array_almost_equal(results['constraints'], [-3.84137167e-14, 1.50000000e+00], decimal=11)
     assert_array_almost_equal(results['multipliers'], [5.e-06, 0.e+00], decimal=11)
     assert_array_almost_equal(results['gradient'], [1., 1.], decimal=11)

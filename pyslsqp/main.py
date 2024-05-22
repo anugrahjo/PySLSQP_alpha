@@ -286,7 +286,7 @@ def optimize(x0, obj=None, grad=None,
         Name of the file to load the previous optimization solution or iterates for warm or hot start.
         If None, the ``load_filename`` is assumed to be the same as the save_filename.
         If ``load_filename`` is same as the provided ``save_filename`` will be updated as:
-        'save_filename without extension' + '_new.hdf5'.
+        'save_filename without extension' + '_warm.hdf5' or '_hot.hdf5' depending on the warm_start or hot_start.
     visualize : bool, default=False
         Set to True to visualize the optimization process.
         Only major iterations are visualized.
@@ -343,7 +343,10 @@ def optimize(x0, obj=None, grad=None,
         if load_filename is None:
             load_filename = save_filename
         if save_filename == load_filename:
-            save_filename = save_filename.split('.')[0] + '_new.hdf5'
+            if warm_start:
+                save_filename = save_filename.split('.')[0] + '_warm.hdf5'
+            else:
+                save_filename = save_filename.split('.')[0] + '_hot.hdf5'
         if h5py is None:
             raise ImportError("h5py is required for loading previous solution. Install h5py to use warm or hot start.")
         try:
@@ -394,8 +397,9 @@ def optimize(x0, obj=None, grad=None,
     if xu is None:
         xu = np.full(n, np.inf)
 
-    xl = np.copy(xl)  # Copied so that the original is not modified, if used later by the user
-    xu = np.copy(xu)  # Copied so that the original is not modified, if used later by the user
+    import copy
+    xl = copy.copy(xl)  # Copied so that the original is not modified, if used later by the user
+    xu = copy.copy(xu)  # Copied so that the original is not modified, if used later by the user
 
     # Check and update xl and xu to match the size of x0
     xl = check_update_scalar(xl, 'xl', n, 'optimization variables x0')
@@ -670,6 +674,9 @@ def optimize(x0, obj=None, grad=None,
               alpha, f0, gs, h1, h2, h3, h4, t, t0, tol,
               iexact, incons, ireset, itermx, line,
               n1, n2, n3)
+        if majiter > majiter_prev and majiter != majiter_prev + 1:
+            print(f"Warning (SLSQP Bug): Major iteration counter jumped from {majiter_prev} to {majiter}. Resetting to {majiter_prev + 1}.")
+            majiter = majiter_prev + 1
         opt_time += time.time() - opt_start
 
         x = x_scaled / x_scaler
@@ -726,7 +733,8 @@ def optimize(x0, obj=None, grad=None,
         out_dict['multipliers'] = w[wref:wref+m]
         out_dict['jacobian'] = a[:, :-1]
         out_dict['optimality'] = h1
-        out_dict['feasibility'] = h2
+        # out_dict['feasibility'] = h2
+        out_dict['feasibility'] = feas_calc = np.sum(np.abs(c[:meq])) + np.sum(np.maximum(0, -c[meq:]))
         out_dict['step'] = alpha
 
         if save_itr == 'all':
@@ -744,7 +752,7 @@ def optimize(x0, obj=None, grad=None,
                 # print('abs sum of constraint violations', h2)
                 # print('some measure of optimality (~complementarity)', h3)
                 print("%5i %5i %5i %16.6E %16.6E %16.6E %16.6E %16.6E %16.6E" % (majiter, prob.nfev, prob.ngev,
-                                                   fx, linalg.norm(g), linalg.norm(c), h2, h1, alpha))
+                                                   fx, linalg.norm(g), linalg.norm(c), feas_calc, h1, alpha))
                 # with open('obj_slsqp.out', 'a') as f:
                 #     np.savetxt(f, [fx])
                 # with open('opt_slsqp.out', 'a') as f:
@@ -757,7 +765,7 @@ def optimize(x0, obj=None, grad=None,
             # Write the status of the current iteration to the summary file regardless of the iprint value
             with open(summary_filename, 'a') as f:
                 f.write("%5i %5i %5i %16.6E %16.6E %16.6E %16.6E %16.6E %16.6E \n" % (majiter, prob.nfev, prob.ngev,
-                                                fx, linalg.norm(g), linalg.norm(c), h2, h1, alpha))
+                                                fx, linalg.norm(g), linalg.norm(c), feas_calc, h1, alpha))
                                                 # fx, linalg.norm(g), np.sum(np.abs(c[:meq]))+np.sum(np.maximum(0, -c[meq:])), h2, h1, alpha))
             if visualize:
                 visualizer.update_plot(out_dict)
@@ -812,7 +820,7 @@ def optimize(x0, obj=None, grad=None,
     results['x'] = x
     results['objective'] = fx
     results['optimality'] = h1
-    results['feasibility'] = h2
+    results['feasibility'] = feas_calc
     results['constraints'] = c[:m]
     results['multipliers'] = w[wref:wref+m]
     results['gradient'] = g[:-1]
