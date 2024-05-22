@@ -257,3 +257,9 @@ def test_postprocessing_notebook():
     assert results['nfev_reused_in_hotstart'] == 4
     assert results['ngev_reused_in_hotstart'] == 4
     assert results['summary_filename'] == 'slsqp_summary.out'
+
+if __name__ == '__main__':
+    test_readme()
+    test_getting_started()
+    test_basic_notebook()
+    test_postprocessing_notebook()

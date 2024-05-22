@@ -13,7 +13,7 @@ except ImportError:
 
 class Visualizer:
 
-    def __init__(self, visualize_vars, summary_filename):
+    def __init__(self, visualize_vars, summary_filename, save_figname):
         '''
         Initialize the visualizer with the variables to visualize. 
         The variables should be a list of strings, where each string is the name of a variable to visualize. 
@@ -30,12 +30,22 @@ class Visualizer:
         Creates an interactive plot with the specified variables on the y-axis and the iteration number on the x-axis.
         The plots are stacked vertically in the order they are specified in the list.
         The plot is updated with the latest values of the variables after each iteration.
+
+        Parameters
+        ----------
+        visualize_vars : list of str
+            List of variables to visualize.
+        summary_filename : str
+            Name of the summary file which is displayed in the title of the plot.
+        save_figname : str
+            Name of the file to save the plot.
         '''
 
         v_start = time.time()
         if plt is None:
             raise ImportError("matplotlib not found, cannot visualize.")
         self.visualize_vars = visualize_vars
+        self.save_figname = save_figname
         plt.ion()
         lines_dict = {}
         var_dict = {}
@@ -52,6 +62,13 @@ class Visualizer:
             else:
                 lines_dict[var], = ax.plot([], [], label=var)
             ax.legend()
+
+        # self.fig.set_figwidth(8)
+        # self.fig.set_figheight(3*n_plots)
+        # self.fig.set_size_inches(10, 3*len(self.visualize_vars), forward=True)
+        # plt.gcf().set_size_inches(10, 3*len(self.visualize_vars))
+        plt.tight_layout(pad=3.0, h_pad=0.1, w_pad=0.1, rect=[0, 0, 1., 1.])
+
         self.lines_dict = lines_dict
         self.var_dict = var_dict
 
@@ -107,19 +124,39 @@ class Visualizer:
         self.fig.canvas.flush_events()
 
         self.vis_time += time.time() - v_start
+        
+    def save_plot(self, save_figname):
+        '''
+        Save the plot to a file.
+        '''
+        v_start = time.time()
+        # plt.gcf().set_size_inches(10, 3*len(self.visualize_vars))
+        # self.fig.set_size_inches(10, 3*len(self.visualize_vars), forward=True)
+        self.fig.savefig(save_figname,)
+        self.vis_time += time.time() - v_start
+
+    def close_plot(self):
+        '''
+        Close the plot.
+        '''
+        self.save_plot(self.save_figname)
+        
+        plt.ioff()   
+        plt.close()
 
     def keep_plot(self):
         '''
         Keep the plot open after the optimization is completed.
         '''
+        self.save_plot(self.save_figname)
+
         w_start = time.time()
         plt.ioff()
         plt.show()
         self.wait_time += time.time() - w_start
 
 
-
-def visualize(savefilename, visualize_vars, itr_start=0, itr_end=-1, major_only=False):
+def visualize(savefilename, visualize_vars, itr_start=0, itr_end=-1, major_only=False, save_figname=None):
     '''
     Visualize different scalar variables using the saved data in a file.
 
@@ -155,6 +192,8 @@ def visualize(savefilename, visualize_vars, itr_start=0, itr_end=-1, major_only=
     major_only : bool, default=False
         If True, only major iterations are visualized.
         If False, all iterations are visualized irrespective of major or line search iterations.
+    save_figname : str, default=None
+        Path to save the figure. If None, the figure is not saved.
     '''
 
     v_start = time.time()
@@ -180,5 +219,9 @@ def visualize(savefilename, visualize_vars, itr_start=0, itr_end=-1, major_only=
 
         ax.legend()
 
+    fig.set_size_inches(10, 3*n_plots)
+    fig.tight_layout(pad=3.0, h_pad=1, w_pad=1, rect=[0, 0, 1., 1.])
+    if save_figname is not None:
+        fig.savefig(save_figname)
     plt.show()
     vis_time = time.time() - v_start

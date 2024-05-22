@@ -160,6 +160,7 @@ def get_default_options():
         'visualize': False,
         'visualize_vars': ['objective', 'optimality', 'feasibility'],
         'keep_plot_open': False,
+        'save_figname': 'slsqp_plot.pdf',
     }
 
     return options
@@ -172,7 +173,7 @@ def optimize(x0, obj=None, grad=None,
             finite_diff_abs_step=None, finite_diff_rel_step=_epsilon, 
             summary_filename='slsqp_summary.out', warm_start=False, hot_start=False, load_filename=None,
             save_itr=None, save_filename='slsqp_recorder.hdf5', save_vars=['x', 'objective', 'optimality', 'feasibility', 'step', 'iter', 'majiter', 'ismajor', 'mode'],
-            visualize=False, visualize_vars=['objective', 'optimality', 'feasibility'], keep_plot_open= False,):
+            visualize=False, visualize_vars=['objective', 'optimality', 'feasibility'], keep_plot_open= False, save_figname='slsqp_plot.pdf'):
     """
     Minimize a scalar function of one or more variables using Sequential
     Least Squares Programming (SLSQP).
@@ -294,6 +295,8 @@ def optimize(x0, obj=None, grad=None,
         ``['x[i]', 'objective', 'optimality', 'feasibility', 'constraints[i]', 'gradient[i]', 'multipliers[i]', 'jacobian[i,j]']``.
     keep_plot_open : bool, default=False
         Set to True to keep the plot window open after the optimization process is complete.
+    save_figname : str, default='slsqp_plot.pdf'
+        Name of the file to save the plot.
     """
     main_start = time.time()
 
@@ -327,7 +330,7 @@ def optimize(x0, obj=None, grad=None,
                 else:
                     raise ValueError(f"Invalid variable {var} in visualize_vars. Must be one of ['objective', 'optimality', 'feasibility', 'x[i]', 'constraint[i]', 'gradient[i]', 'multipliers[i]', 'jacobian[i,j]'].")
         
-        visualizer = Visualizer(visualize_vars, summary_filename)
+        visualizer = Visualizer(visualize_vars, summary_filename, save_figname)
 
     # Transform x0 into an array.
     x = np.asfarray(x0).flatten()
@@ -768,10 +771,12 @@ def optimize(x0, obj=None, grad=None,
     vis_time = 0.0
     vis_wait = 0.0
     if visualize:
-        vis_time = visualizer.vis_time
         if keep_plot_open:
             visualizer.keep_plot()
             vis_wait = visualizer.wait_time
+        else:
+            visualizer.close_plot()
+        vis_time = visualizer.vis_time   
 
     total_time = time.time() - main_start - vis_wait
     processing_time = total_time - prob.fev_time - prob.gev_time - vis_time - opt_time
@@ -800,6 +805,8 @@ def optimize(x0, obj=None, grad=None,
         print("            Summary saved to                     : " + summary_filename)
         if save_itr is not None:
             print("            Iteration data saved to              : " + save_filename)
+        if visualize:
+            print("            Plot saved to                        : " + save_figname)
 
     results = {}
     results['x'] = x
@@ -828,6 +835,8 @@ def optimize(x0, obj=None, grad=None,
     results['summary_filename'] = summary_filename
     if save_itr is not None:
         results['save_filename'] = save_filename
+    if visualize:
+        results['plot_filename'] = save_figname
 
     if save_itr is not None:
         file.create_group('results')
