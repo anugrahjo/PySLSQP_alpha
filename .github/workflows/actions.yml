@@ -12,7 +12,7 @@ on:
 
 # Here, we specify the automatic cloud based testing that will be ran on pushes/PRs to "main"
 jobs:
-  build-and-test-ubuntu:
+  master-build-and-test-ubuntu:
 
     # The tests will run on ubuntu with python versions 3.8, 3.9, and 3.10.
     # Add other OSes like windows and macOS if needed as well as other Python versions  
@@ -39,7 +39,7 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
         pip install pytest pytest-cov coveralls
-        pip install .
+        pip install -e .
 
       # Finally, we run the package unit-tests on the specified OS and python versions
       # and generate the coverage report
