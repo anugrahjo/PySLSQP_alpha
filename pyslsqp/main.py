@@ -32,7 +32,7 @@ from .save_and_load import save_iteration
 # the compiled module is not available in the package directory, but only in the build directory.
 # This is an issue for autodoc (since autodoc has access only to the package directory), but not for normal usage.
 # This is not an issue if RTD allowed to build the package in editable mode using pip install -e . .
-if os.getenv('READTHEDOCS') == 'False':
+if os.getenv('READTHEDOCS') is None:
     from ._slsqp import slsqp
 else:
     slsqp = None
