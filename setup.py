@@ -62,7 +62,7 @@ if __name__ == "__main__":
         packages=find_packages(where="."),
         # package_dir={"": "pyslsqp"},
         # include_package_data=True,
-        # package_data={'pyslsqp': ['*.so']},
+        package_data={'pyslsqp': ['*.so']}, # this is needed to include the shared object file in the build directory in site-pkgs
         python_requires='>=3.7',
         # platforms=["Linux, Windows", "Mac OS X", "Unix", "POSIX", "Any"],
         # TODO: Add the correct classifiers license, platforms, and install_requires version requirements
