@@ -25,7 +25,17 @@ from numpy import array, isfinite, linalg
 _epsilon = np.sqrt(np.finfo(float).eps)
 
 from .save_and_load import save_iteration
-from ._slsqp import slsqp
+
+# Import the compiled Fortran SLSQP module if not on ReadTheDocs
+# After pip install . on ReadTheDocs, it fails to import the compiled module 
+# for autofunction in autodoc, so we skip it. Reason is that when doing pip install .,
+# the compiled module is not available in the package directory, but only in the build directory.
+# This is an issue for autodoc (since autodoc has access only to the package directory), but not for normal usage.
+# This is not an issue if RTD allowed to build the package in editable mode using pip install -e . .
+if os.getenv('READTHEDOCS') == 'False':
+    from ._slsqp import slsqp
+else:
+    slsqp = None
 
 from .visualize import Visualizer
 # from visualize_plotly import Visualizer
