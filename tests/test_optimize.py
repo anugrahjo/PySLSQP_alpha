@@ -212,6 +212,9 @@ def test_optimize():
     assert_almost_equal(res12['feasibility'], 0.0, decimal=7)
     assert_almost_equal(res12['x'], [1., 3., 5., 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2], decimal=3)
 
+import pytest
+
+@pytest.mark.visualize
 def test_visualize():
     import os
     import numpy as np

@@ -15,3 +15,18 @@ dynamic = ["version"]
 
 [tool.setuptools.dynamic]
 version = {attr = "pyslsqp.__version__"}
+
+[tool.pytest.ini_options]
+markers = [
+    "visualize: marks tests as visualize (deselect with '-m \"not visualize\"')",
+]
+
+[tool.coverage.run]
+omit = [
+    # omit anything in a tests directory anywhere
+    "*/tests/*",
+    # omit everything in a docs directory anywhere
+    "/docs/*",
+    # omit this single file since visualization is not tested by default
+    "pyslsqp/visualize.py",
+    ]

@@ -101,7 +101,7 @@ pip install pytest
 
 and run the following line on the terminal from the project root directory:
 ```sh
-pytest
+pytest -m "not visualize"
 ```
 
 ## Usage

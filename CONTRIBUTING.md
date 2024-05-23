@@ -87,6 +87,7 @@ pip install pytest
 and run any one of the following lines
 ```sh
 pytest                              # standard testing
+pytest -m "not visualize"               # skip testing visualization since it opens multiple windows
 pytest --disable-warnings           # tests without displaying warnings
 pytest -rP                          # tests while displaying print statements
 pytest tests/ --cov=pyslsqp         # testing while also computing line coverage
