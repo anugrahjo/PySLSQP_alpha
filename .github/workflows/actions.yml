@@ -38,12 +38,20 @@ jobs:
       run: | 
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
+        pip install pytest pytest-cov coveralls
         pip install -e .
 
-      # Finally, we run the package unit-tests on the specified OS and python versions.
+      # Finally, we run the package unit-tests on the specified OS and python versions
+      # and generate the coverage report
     - name: Test with pytest
       run: |
-        pytest
+        pytest tests/ --cov=pyslsqp --cov-report html
+      
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@v2.3.0
+      with:
+        github-token: ${{ secrets.COVERALLS_REPO_TOKEN}}
+        file: ./coverage.lcov
 
   build-and-test-macos:
     # The tests will run on ubuntu with python versions 3.8, 3.9, and 3.10.
