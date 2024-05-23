@@ -37,6 +37,13 @@ if os.getenv('READTHEDOCS') == 'False':
 else:
     slsqp = None
 
+# Another workaround for ReadTheDocs to avoid the ImportError
+# The following will also work since the compiled module can be imported 
+# as _slsqp from the package directory rather than ._slsqp from the build directory.
+# since the compiled module is available in the package directory.
+if slsqp is None:
+    from _slsqp import slsqp
+
 from .visualize import Visualizer
 # from visualize_plotly import Visualizer
 # from visualize_plotly_tabs import Visualizer
