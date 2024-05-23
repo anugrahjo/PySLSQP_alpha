@@ -39,7 +39,7 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
         pip install pytest pytest-cov coveralls
-        pip install -e .
+        pip install .
 
       # Finally, we run the package unit-tests on the specified OS and python versions
       # and generate the coverage report
@@ -79,7 +79,8 @@ jobs:
         python -m pip install --upgrade pip
         brew reinstall gcc
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-        pip install -e .
+        pip install pytest pytest-cov
+        pip install .
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
     - name: Test with pytest
