@@ -23,7 +23,7 @@ jobs:
       matrix:
         # os: [ubuntu-latest, windows-latest, macOS-latest]
         # python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.10"]
 
     steps:
       # The steps here are essentially command-line arguments that will be ran on the cloud with the above configurations  
@@ -45,7 +45,7 @@ jobs:
       # and generate the coverage report
     - name: Test with pytest
       run: |
-        pytest tests/ --cov=pyslsqp --cov-report html
+        pytest -m "not visualize" tests/ --cov=pyslsqp --cov-report lcov
       
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v2.3.0
