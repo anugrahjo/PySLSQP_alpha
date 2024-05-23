@@ -12,7 +12,7 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../'))     # for autodoc
+sys.path.insert(0, os.path.abspath('..'))     # for autodoc
 
 def get_version_string(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
