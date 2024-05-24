@@ -41,6 +41,16 @@ def print_dict_as_table(data):
     ----------
     data : dict
         Dictionary to print as a table.
+
+    Examples
+    --------
+    >>> data = {'a': 0, 'b': "string", 'c': ['a', 'b', 'c']}
+    >>> print_dict_as_table(data)
+    --------------------------------------------------
+            a                        : 0
+            b                        : string
+            c                        : ['a', 'b', 'c']
+    --------------------------------------------------
     """
     print("--------------------------------------------------")
     for key, value in data.items():
@@ -84,7 +94,6 @@ def print_file_contents(filepath):
                 Total optimization time              : ... s [100.00%]
                 Summary saved to                     : slsqp_summary.out
                 Iteration data saved to              : slsqp_recorder.hdf5
-    
     >>> from pyslsqp.postprocessing import print_file_contents
     >>> print_file_contents('slsqp_recorder.hdf5')  # doctest: +NORMALIZE_WHITESPACE
     Available data in the file:
@@ -173,7 +182,6 @@ def load_variables(filepath, vars, itr_start=0, itr_end=-1, major_only=False):
                 Total optimization time              : ... s [100.00%]
                 Summary saved to                     : slsqp_summary.out
                 Iteration data saved to              : slsqp_recorder.hdf5
-    
     >>> from pyslsqp.postprocessing import load_variables
     >>> load_variables('slsqp_recorder.hdf5', ['objective', 'optimality', 'x[0]'], itr_start=0, itr_end=-1, major_only=True)
     {'objective': [0.5, 0.0, 0.0], 'optimality': [99.0, 0.0, 0.0], 'x[0]': [0.5, 0.0, 0.0]}
@@ -295,7 +303,6 @@ def load_results(filepath):
                 Total optimization time              : ... s [100.00%]
                 Summary saved to                     : slsqp_summary.out
                 Iteration data saved to              : slsqp_recorder.hdf5
-    
     >>> from pyslsqp.postprocessing import load_results
     >>> load_results('slsqp_recorder.hdf5')  # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     {'constraints': array([], dtype=float64), 'feasibility': 0.0, 'fev_time': ..., 'gev_time': ..., 'gradient': array([0., 0.]), 
@@ -356,7 +363,6 @@ def load_attributes(filepath):
                 Total optimization time              : ... s [100.00%]
                 Summary saved to                     : slsqp_summary.out
                 Iteration data saved to              : slsqp_recorder.hdf5
-    
     >>> from pyslsqp.postprocessing import load_attributes
     >>> load_attributes('slsqp_recorder.hdf5')  # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     {'acc': 1e-06, 'con_scaler': 1.0, 'finite_diff_abs_step': 'None (undefined)', 'finite_diff_rel_step': 1.4901161193847656e-08, 

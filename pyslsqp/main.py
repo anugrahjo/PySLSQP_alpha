@@ -142,6 +142,18 @@ def check_load_variables(read_file, iter, x, vars):
 def get_default_options():
     """
     Returns the default options for the ``optimize()`` function as a dictionary.
+
+    Examples
+    --------
+    >>> options = get_default_options()
+    >>> options # doctest: +NORMALIZE_WHITESPACE
+    {'obj': None, 'grad': None, 'con': None, 'jac': None, 'meq': 0, 'callback': None, 'xl': None, 'xu': None, 
+    'x_scaler': 1.0, 'obj_scaler': 1.0, 'con_scaler': 1.0, 'maxiter': 100, 'acc': 1e-06, 'iprint': 1, 
+    'finite_diff_abs_step': None, 'finite_diff_rel_step': 1.4901161193847656e-08, 'summary_filename': 'slsqp_summary.out', 
+    'warm_start': False, 'hot_start': False, 'load_filename': None, 'save_itr': None, 'save_filename': 'slsqp_recorder.hdf5', 
+    'save_vars': ['x', 'objective', 'optimality', 'feasibility', 'step', 'iter', 'majiter', 'ismajor', 'mode'], 
+    'visualize': False, 'visualize_vars': ['objective', 'optimality', 'feasibility'], 'keep_plot_open': False, 
+    'save_figname': 'slsqp_plot.pdf'}
     """
     options = {
         'obj': None,
@@ -335,10 +347,8 @@ def optimize(x0, obj=None, grad=None,
                 Visualization time                   : ... s [  0.00%]
                 Total optimization time              : ... s [100.00%]
                 Summary saved to                     : slsqp_summary.out
-
     >>> results['x']
     array([0., 0.])
-
     >>> con = lambda x: np.array([x[0] - 0.1, x[1] - 0.2])
     >>> jac = lambda x: np.array([[1, 0], [0, 1]])
     >>> meq = 1
@@ -359,7 +369,6 @@ def optimize(x0, obj=None, grad=None,
                 Visualization time                   : ... s [  0.00%]
                 Total optimization time              : ... s [100.00%]
                 Summary saved to                     : slsqp_summary.out
-    
     >>> results['x']
     array([0.1, 0.2])
 

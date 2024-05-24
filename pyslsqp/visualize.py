@@ -223,7 +223,6 @@ def visualize(savefilename, visualize_vars, itr_start=0, itr_end=-1, major_only=
                 Total optimization time              : ... s [100.00%]
                 Summary saved to                     : slsqp_summary.out
                 Iteration data saved to              : slsqp_recorder.hdf5
-
     >>> from pyslsqp.postprocessing import visualize
     >>> visualize('slsqp_recorder.hdf5', ['objective', 'optimality', 'x[0]', 'x[1]'], major_only=True)
     '''
