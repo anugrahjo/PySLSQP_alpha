@@ -24,7 +24,7 @@ from numpy import array, isfinite, linalg
 
 _epsilon = np.sqrt(np.finfo(float).eps)
 
-from .save_and_load import save_iteration
+from pyslsqp.save_and_load import save_iteration
 
 # Import the compiled Fortran SLSQP module if not on ReadTheDocs
 # After pip install . on ReadTheDocs, it fails to import the compiled module 
@@ -33,11 +33,11 @@ from .save_and_load import save_iteration
 # This is an issue for autodoc (since autodoc has access only to the package directory), but not for normal usage.
 # This is not an issue if RTD allowed to build the package in editable mode using pip install -e . .
 if os.getenv('READTHEDOCS') is None:
-    from ._slsqp import slsqp
+    from pyslsqp._slsqp import slsqp
 else:
     slsqp = None
 
-from .visualize import Visualizer
+from pyslsqp.visualize import Visualizer
 # from visualize_plotly import Visualizer
 # from visualize_plotly_tabs import Visualizer
 
@@ -107,7 +107,7 @@ def check_update_scalar(scalar, name, size, ref_name):
         raise ValueError(f"{name} must be a scalar or a 1-D array.")
     if len(scalar) != size:
         raise ValueError(f"{name} must have the same length as the {ref_name} ({size},).")
-    return scalar
+    return np.asfarray(scalar) # Convert to float array if an integer array is provided
 
 def check_load_variables(read_file, iter, x, vars):
     """
@@ -307,6 +307,62 @@ def optimize(x0, obj=None, grad=None,
         Set to True to keep the plot window open after the optimization process is complete.
     save_figname : str, default='slsqp_plot.pdf'
         Name of the file to save the plot.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from pyslsqp import optimize
+    >>> obj = lambda x: np.sum(x**2)
+    >>> grad = lambda x: 2*x
+    >>> xl = 0.0
+    >>> xu = np.array([1, 1])
+    >>> x0 = np.array([0.5, 0.5])
+    >>> results = optimize(x0, obj=obj, grad=grad, xl=xl, xu=xu)  # doctest: +ELLIPSIS
+    No constraints defined. Running an unconstrained optimization problem...
+    Optimization terminated successfully    (Exit mode 0)
+                Final objective value                : 0.000000e+00
+                Final optimality                     : 0.000000e+00
+                Final feasibility                    : 0.000000e+00
+                Number of major iterations           : 2
+                Number of function evaluations       : 2
+                Number of derivative evaluations     : 2
+                Average Derivative evaluation time   : ... s per evaluation
+                Average Function evaluation time     : ... s per evaluation
+                Total Function evaluation time       : ... s [ ...%]
+                Total Derivative evaluation time     : ... s [ ...%]
+                Optimizer time                       : ... s [ ...%]
+                Processing time                      : ... s [ ...%]
+                Visualization time                   : ... s [  0.00%]
+                Total optimization time              : ... s [100.00%]
+                Summary saved to                     : slsqp_summary.out
+
+    >>> results['x']
+    array([0., 0.])
+
+    >>> con = lambda x: np.array([x[0] - 0.1, x[1] - 0.2])
+    >>> jac = lambda x: np.array([[1, 0], [0, 1]])
+    >>> meq = 1
+    >>> results = optimize(x0, obj=obj, grad=grad, con=con, jac=jac, meq=meq, xl=xl, xu=xu) # doctest: +ELLIPSIS
+    Optimization terminated successfully    (Exit mode 0)
+                Final objective value                : 5.000000e-02
+                Final optimality                     : 1.538763e-16
+                Final feasibility                    : 1.942890e-16
+                Number of major iterations           : 2
+                Number of function evaluations       : 2
+                Number of derivative evaluations     : 2
+                Average Derivative evaluation time   : ... s per evaluation
+                Average Function evaluation time     : ... s per evaluation
+                Total Function evaluation time       : ... s [ ...%]
+                Total Derivative evaluation time     : ... s [ ...%]
+                Optimizer time                       : ... s [ ...%]
+                Processing time                      : ... s [ ...%]
+                Visualization time                   : ... s [  0.00%]
+                Total optimization time              : ... s [100.00%]
+                Summary saved to                     : slsqp_summary.out
+    
+    >>> results['x']
+    array([0.1, 0.2])
+
     """
     main_start = time.time()
     import copy
@@ -582,6 +638,10 @@ def optimize(x0, obj=None, grad=None,
             save_vars.append('iter')
         if 'majiter' not in save_vars:
             save_vars.append('majiter')
+
+        if not set(save_vars).issubset(['x', 'objective', 'optimality', 'feasibility', 'step', 'mode', 'iter', 'majiter', 'ismajor', 'constraints', 'gradient', 'multipliers', 'jacobian']):
+            raise ValueError("Invalid variable in save_vars. Must be one of " \
+                             "'x', 'objective', 'optimality', 'feasibility', 'step', 'mode', 'iter', 'majiter', 'ismajor', 'constraints', 'gradient', 'multipliers', or 'jacobian'.")
         
         file = h5py.File(save_filename, 'a')
         file.attrs['n'] = n
@@ -883,4 +943,5 @@ def optimize(x0, obj=None, grad=None,
     return results
 
 if __name__ == "__main__":
-    pass
+    import doctest
+    doctest.testmod()

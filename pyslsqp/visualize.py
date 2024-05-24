@@ -194,6 +194,38 @@ def visualize(savefilename, visualize_vars, itr_start=0, itr_end=-1, major_only=
         If False, all iterations are visualized irrespective of major or line search iterations.
     save_figname : str, default=None
         Path to save the figure. If None, the figure is not saved.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from pyslsqp import optimize
+    >>> obj = lambda x: np.sum(x**2)
+    >>> grad = lambda x: 2*x
+    >>> xl = 0.0
+    >>> xu = np.array([1, 1])
+    >>> x0 = np.array([0.5, 0.5])
+    >>> results = optimize(x0, obj=obj, grad=grad, xl=xl, xu=xu, save_itr='major', save_vars=['objective', 'optimality', 'x'])  # doctest: +ELLIPSIS
+    No constraints defined. Running an unconstrained optimization problem...
+    Optimization terminated successfully    (Exit mode 0)
+                Final objective value                : 0.000000e+00
+                Final optimality                     : 0.000000e+00
+                Final feasibility                    : 0.000000e+00
+                Number of major iterations           : 2
+                Number of function evaluations       : 2
+                Number of derivative evaluations     : 2
+                Average Derivative evaluation time   : ... s per evaluation
+                Average Function evaluation time     : ... s per evaluation
+                Total Function evaluation time       : ... s [ ...%]
+                Total Derivative evaluation time     : ... s [ ...%]
+                Optimizer time                       : ... s [ ...%]
+                Processing time                      : ... s [ ...%]
+                Visualization time                   : ... s [  0.00%]
+                Total optimization time              : ... s [100.00%]
+                Summary saved to                     : slsqp_summary.out
+                Iteration data saved to              : slsqp_recorder.hdf5
+
+    >>> from pyslsqp.postprocessing import visualize
+    >>> visualize('slsqp_recorder.hdf5', ['objective', 'optimality', 'x[0]', 'x[1]'], major_only=True)
     '''
 
     v_start = time.time()
@@ -225,3 +257,7 @@ def visualize(savefilename, visualize_vars, itr_start=0, itr_end=-1, major_only=
         fig.savefig(save_figname)
     plt.show()
     vis_time = time.time() - v_start
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

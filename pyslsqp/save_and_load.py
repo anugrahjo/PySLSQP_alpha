@@ -55,6 +55,49 @@ def print_file_contents(filepath):
     ----------
     filepath : str
         Path to the saved file.        
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from pyslsqp import optimize
+    >>> obj = lambda x: np.sum(x**2)
+    >>> grad = lambda x: 2*x
+    >>> xl = 0.0
+    >>> xu = np.array([1, 1])
+    >>> x0 = np.array([0.5, 0.5])
+    >>> results = optimize(x0, obj=obj, grad=grad, xl=xl, xu=xu, save_itr='major', save_vars=['objective', 'optimality', 'x'])  # doctest: +ELLIPSIS
+    No constraints defined. Running an unconstrained optimization problem...
+    Optimization terminated successfully    (Exit mode 0)
+                Final objective value                : 0.000000e+00
+                Final optimality                     : 0.000000e+00
+                Final feasibility                    : 0.000000e+00
+                Number of major iterations           : 2
+                Number of function evaluations       : 2
+                Number of derivative evaluations     : 2
+                Average Derivative evaluation time   : ... s per evaluation
+                Average Function evaluation time     : ... s per evaluation
+                Total Function evaluation time       : ... s [ ...%]
+                Total Derivative evaluation time     : ... s [ ...%]
+                Optimizer time                       : ... s [ ...%]
+                Processing time                      : ... s [ ...%]
+                Visualization time                   : ... s [  0.00%]
+                Total optimization time              : ... s [100.00%]
+                Summary saved to                     : slsqp_summary.out
+                Iteration data saved to              : slsqp_recorder.hdf5
+    
+    >>> from pyslsqp.postprocessing import print_file_contents
+    >>> print_file_contents('slsqp_recorder.hdf5')  # doctest: +NORMALIZE_WHITESPACE
+    Available data in the file:
+    ---------------------------
+         Attributes of optimization  : ['acc', 'con_scaler', 'finite_diff_abs_step', 'finite_diff_rel_step', 
+         'hot_start', 'iprint', 'keep_plot_open', 'load_filename', 'm', 'maxiter', 'meq', 'n', 'obj_scaler', 
+         'save_figname', 'save_filename', 'save_itr', 'save_vars', 'summary_filename', 'visualize', 'visualize_vars', 
+         'warm_start', 'x0', 'x_scaler', 'xl', 'xu']
+         Saved variable iterates     : ['ismajor', 'iter', 'majiter', 'objective', 'optimality', 'x']
+         Results of Optimization     : ['constraints', 'feasibility', 'fev_time', 'gev_time', 'gradient', 'jacobian', 
+         'message', 'multipliers', 'nfev', 'ngev', 'num_majiter', 'objective', 'optimality', 'optimizer_time', 'processing_time', 
+         'save_filename', 'status', 'success', 'summary_filename', 'total_time', 'visualization_time', 'x']
+
     '''
     file = import_h5py_file(filepath)
     print("Available data in the file:")
@@ -101,6 +144,40 @@ def load_variables(filepath, vars, itr_start=0, itr_end=-1, major_only=False):
     -------
     out_data : dict
         Dictionary with variable names as keys and list of variable iterates as values.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from pyslsqp import optimize
+    >>> obj = lambda x: np.sum(x**2)
+    >>> grad = lambda x: 2*x
+    >>> xl = 0.0
+    >>> xu = np.array([1, 1])
+    >>> x0 = np.array([0.5, 0.5])
+    >>> results = optimize(x0, obj=obj, grad=grad, xl=xl, xu=xu, save_itr='major', save_vars=['objective', 'optimality', 'x'])  # doctest: +ELLIPSIS
+    No constraints defined. Running an unconstrained optimization problem...
+    Optimization terminated successfully    (Exit mode 0)
+                Final objective value                : 0.000000e+00
+                Final optimality                     : 0.000000e+00
+                Final feasibility                    : 0.000000e+00
+                Number of major iterations           : 2
+                Number of function evaluations       : 2
+                Number of derivative evaluations     : 2
+                Average Derivative evaluation time   : ... s per evaluation
+                Average Function evaluation time     : ... s per evaluation
+                Total Function evaluation time       : ... s [ ...%]
+                Total Derivative evaluation time     : ... s [ ...%]
+                Optimizer time                       : ... s [ ...%]
+                Processing time                      : ... s [ ...%]
+                Visualization time                   : ... s [  0.00%]
+                Total optimization time              : ... s [100.00%]
+                Summary saved to                     : slsqp_summary.out
+                Iteration data saved to              : slsqp_recorder.hdf5
+    
+    >>> from pyslsqp.postprocessing import load_variables
+    >>> load_variables('slsqp_recorder.hdf5', ['objective', 'optimality', 'x[0]'], itr_start=0, itr_end=-1, major_only=True)
+    {'objective': [0.5, 0.0, 0.0], 'optimality': [99.0, 0.0, 0.0], 'x[0]': [0.5, 0.0, 0.0]}
+
     '''
     if not isinstance(filepath, str):
         raise ValueError("filepath must be a string.")
@@ -189,6 +266,44 @@ def load_results(filepath):
     -------
     out_data : dict
         Dictionary with optimization results.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from pyslsqp import optimize
+    >>> obj = lambda x: np.sum(x**2)
+    >>> grad = lambda x: 2*x
+    >>> xl = 0.0
+    >>> xu = np.array([1, 1])
+    >>> x0 = np.array([0.5, 0.5])
+    >>> results = optimize(x0, obj=obj, grad=grad, xl=xl, xu=xu, save_itr='major', save_vars=['objective', 'optimality', 'x'])  # doctest: +ELLIPSIS
+    No constraints defined. Running an unconstrained optimization problem...
+    Optimization terminated successfully    (Exit mode 0)
+                Final objective value                : 0.000000e+00
+                Final optimality                     : 0.000000e+00
+                Final feasibility                    : 0.000000e+00
+                Number of major iterations           : 2
+                Number of function evaluations       : 2
+                Number of derivative evaluations     : 2
+                Average Derivative evaluation time   : ... s per evaluation
+                Average Function evaluation time     : ... s per evaluation
+                Total Function evaluation time       : ... s [ ...%]
+                Total Derivative evaluation time     : ... s [ ...%]
+                Optimizer time                       : ... s [ ...%]
+                Processing time                      : ... s [ ...%]
+                Visualization time                   : ... s [  0.00%]
+                Total optimization time              : ... s [100.00%]
+                Summary saved to                     : slsqp_summary.out
+                Iteration data saved to              : slsqp_recorder.hdf5
+    
+    >>> from pyslsqp.postprocessing import load_results
+    >>> load_results('slsqp_recorder.hdf5')  # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    {'constraints': array([], dtype=float64), 'feasibility': 0.0, 'fev_time': ..., 'gev_time': ..., 'gradient': array([0., 0.]), 
+    'jacobian': array([], shape=(0, 2), dtype=float64), 'message': 'Optimization terminated successfully', 
+    'multipliers': array([], dtype=float64), 'nfev': 2, 'ngev': 2, 'num_majiter': 2, 'objective': 0.0, 'optimality': 0.0, 
+    'optimizer_time': ..., 'processing_time': ..., 'save_filename': 'slsqp_recorder.hdf5', 'status': 0, 'success': True, 
+    'summary_filename': 'slsqp_summary.out', 'total_time': ..., 'visualization_time': 0.0, 'x': array([0., 0.])}
+
     '''
     file = import_h5py_file(filepath)
     result_dict = {}
@@ -212,11 +327,51 @@ def load_attributes(filepath):
     -------
     out_data : dict
         Dictionary with optimization attributes.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from pyslsqp import optimize
+    >>> obj = lambda x: np.sum(x**2)
+    >>> grad = lambda x: 2*x
+    >>> xl = 0.0
+    >>> xu = np.array([1, 1])
+    >>> x0 = np.array([0.5, 0.5])
+    >>> results = optimize(x0, obj=obj, grad=grad, xl=xl, xu=xu, save_itr='major', save_vars=['objective', 'optimality', 'x'])  # doctest: +ELLIPSIS
+    No constraints defined. Running an unconstrained optimization problem...
+    Optimization terminated successfully    (Exit mode 0)
+                Final objective value                : 0.000000e+00
+                Final optimality                     : 0.000000e+00
+                Final feasibility                    : 0.000000e+00
+                Number of major iterations           : 2
+                Number of function evaluations       : 2
+                Number of derivative evaluations     : 2
+                Average Derivative evaluation time   : ... s per evaluation
+                Average Function evaluation time     : ... s per evaluation
+                Total Function evaluation time       : ... s [ ...%]
+                Total Derivative evaluation time     : ... s [ ...%]
+                Optimizer time                       : ... s [ ...%]
+                Processing time                      : ... s [ ...%]
+                Visualization time                   : ... s [  0.00%]
+                Total optimization time              : ... s [100.00%]
+                Summary saved to                     : slsqp_summary.out
+                Iteration data saved to              : slsqp_recorder.hdf5
+    
+    >>> from pyslsqp.postprocessing import load_attributes
+    >>> load_attributes('slsqp_recorder.hdf5')  # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    {'acc': 1e-06, 'con_scaler': 1.0, 'finite_diff_abs_step': 'None (undefined)', 'finite_diff_rel_step': 1.4901161193847656e-08, 
+    'hot_start': False, 'iprint': 1, 'keep_plot_open': False, 'load_filename': 'None (undefined)', 'm': 0, 'maxiter': 100, 'meq': 0, 'n': 2, 'obj_scaler': 1.0, 
+    'save_figname': 'slsqp_plot.pdf', 'save_filename': 'slsqp_recorder.hdf5', 'save_itr': 'major', 'save_vars': ['objective', 'optimality', 'x', 'ismajor', 'iter', 'majiter'], 
+    'summary_filename': 'slsqp_summary.out', 'visualize': False, 'visualize_vars': ['objective', 'optimality', 'feasibility'], 'warm_start': False, 
+    'x0': array([0.5, 0.5]), 'x_scaler': 1.0, 'xl': 0.0, 'xu': array([1, 1])}
+
     '''
     file = import_h5py_file(filepath)
     attr_dict = {}
     for key in file.attrs.keys():
         attr_dict[key] = file.attrs[key]
+        if key in ['save_vars', 'visualize_vars']:
+            attr_dict[key] = list(file.attrs[key])
     file.close()
     return attr_dict
 
