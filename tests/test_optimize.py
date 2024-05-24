@@ -235,7 +235,7 @@ def test_visualize():
     
     x0 = np.ones(10)
 
-    if not os.getenv("GITHUB_ACTIONS"): # Skip this test on GitHub Actions since it requires a display
+    if os.getenv("GITHUB_ACTIONS") is None: # Skip this test on GitHub Actions since it requires a display
         # This example discovered a bug in SLSQP: majiter jumps from 4 to 9 after 4th major iteration
         # NOTE: <IMPORTANT> This test should not be modified since it exposes a bug in SLSQP, explicit bug fix in pySLSQP.
         # Equality and inequality constrained problem with saving, vector/scalar scaling and bounds
