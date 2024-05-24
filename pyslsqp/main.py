@@ -641,6 +641,7 @@ def optimize(x0, obj=None, grad=None,
             pass
 
         # 'ismajor', 'iter', `majiter` are appended to the save_vars list by default to indicate if the iteration is a major iteration
+        in_save_vars = copy.copy(save_vars)
         if 'ismajor' not in save_vars:
             save_vars.append('ismajor')
         if 'iter' not in save_vars:
@@ -678,7 +679,7 @@ def optimize(x0, obj=None, grad=None,
         file.attrs['summary_filename'] = summary_filename
         file.attrs['save_itr'] = save_itr
         file.attrs['save_filename'] = save_filename
-        file.attrs['save_vars'] = save_vars
+        file.attrs['save_vars'] = in_save_vars
         file.attrs['warm_start'] = warm_start
         file.attrs['hot_start'] = hot_start
         if load_filename is not None:
