@@ -45,7 +45,7 @@ jobs:
       # and generate the coverage report
     - name: Test with pytest
       run: |
-        pytest -m "not visualize" tests/ --cov=pyslsqp --cov-report lcov
+        pytest tests/ --cov=pyslsqp --cov-report lcov
       
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@v2.3.0

@@ -17,8 +17,9 @@ import pytest
 @pytest.mark.visualize
 def test_visualize():
     import visualize
-    failures, _ = doctest.testmod(visualize)
-    assert failures == 0, 'One or more doctests failed in visualize.py'
+    if os.getenv("GITHUB_ACTIONS") is None: # Skip this test on GitHub Actions since it requires a display
+        failures, _ = doctest.testmod(visualize)
+        assert failures == 0, 'One or more doctests failed in visualize.py'
 
 
 def test_save_and_load():
