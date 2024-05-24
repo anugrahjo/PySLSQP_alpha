@@ -367,7 +367,7 @@ def load_attributes(filepath):
     >>> load_attributes('slsqp_recorder.hdf5')  # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
     {'acc': 1e-06, 'con_scaler': 1.0, 'finite_diff_abs_step': 'None (undefined)', 'finite_diff_rel_step': 1.4901161193847656e-08, 
     'hot_start': False, 'iprint': 1, 'keep_plot_open': False, 'load_filename': 'None (undefined)', 'm': 0, 'maxiter': 100, 'meq': 0, 'n': 2, 'obj_scaler': 1.0, 
-    'save_figname': 'slsqp_plot.pdf', 'save_filename': 'slsqp_recorder.hdf5', 'save_itr': 'major', 'save_vars': ['objective', 'optimality', 'x', 'ismajor', 'iter', 'majiter'], 
+    'save_figname': 'slsqp_plot.pdf', 'save_filename': 'slsqp_recorder.hdf5', 'save_itr': 'major', 'save_vars': ['objective', 'optimality', 'x'], 
     'summary_filename': 'slsqp_summary.out', 'visualize': False, 'visualize_vars': ['objective', 'optimality', 'feasibility'], 'warm_start': False, 
     'x0': array([0.5, 0.5]), 'x_scaler': 1.0, 'xl': 0.0, 'xu': array([1, 1])}
 
@@ -382,4 +382,5 @@ def load_attributes(filepath):
     return attr_dict
 
 if __name__ == "__main__":
-    pass
+    import doctest
+    doctest.testmod()

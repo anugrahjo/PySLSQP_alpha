@@ -88,7 +88,7 @@ def test_save_and_load():
     assert attrs['summary_filename'] == 'save_load_slsqp.out'
     assert attrs['save_itr'] == 'all'
     assert attrs['save_filename'] == 'save_load_slsqp.hdf5'
-    assert set(attrs['save_vars']) == set(['iter', 'majiter', 'mode', 'x', 'objective', 'constraints', 'gradient', 'jacobian', 'ismajor'])
+    assert set(attrs['save_vars']) == set(['iter', 'majiter', 'mode', 'x', 'objective', 'constraints', 'gradient', 'jacobian'])
     assert attrs['warm_start'] == False
     assert attrs['hot_start'] == False
     assert attrs['load_filename'] == 'None (undefined)'

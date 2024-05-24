@@ -123,25 +123,26 @@ def test_basic_notebook():
     assert results['ngev'] == 9
     assert results['summary_filename'] == 'scaled_summary.out'
 
-    # Live visualization
-    if os.getenv("GITHUB_ACTIONS") is None: # Skip this test on GitHub Actions since it requires a display
-        global_vars.update(execute_python_code_snippet(python_code[4], global_vars=global_vars))
-        results = global_vars['results']
-        assert results['success'] == True
-        check_timing(results, visualize=True)
+    if 0: # Skip this test everytime, otherwise it will open a plot window even for `pytest -m "not visualize"`
+        # Live visualization
+        if os.getenv("GITHUB_ACTIONS") is None: # Skip this test on GitHub Actions since it requires a display
+            global_vars.update(execute_python_code_snippet(python_code[4], global_vars=global_vars))
+            results = global_vars['results']
+            assert results['success'] == True
+            check_timing(results, visualize=True)
 
-        assert_array_almost_equal(results['objective'], 0.5)
-        assert_array_almost_equal(results['x'], [0.5, 0.5], decimal=11)
-        assert_array_almost_equal(results['optimality'], [1.232595e-31], decimal=11)
-        assert_array_almost_equal(results['feasibility'], [0.], decimal=11)
-        assert_array_almost_equal(results['constraints'], [0., 1.5], decimal=11)
-        assert_array_almost_equal(results['multipliers'], [1., 0.], decimal=11)
-        assert_array_almost_equal(results['gradient'], [1., 1.], decimal=11)
+            assert_array_almost_equal(results['objective'], 0.5)
+            assert_array_almost_equal(results['x'], [0.5, 0.5], decimal=11)
+            assert_array_almost_equal(results['optimality'], [1.232595e-31], decimal=11)
+            assert_array_almost_equal(results['feasibility'], [0.], decimal=11)
+            assert_array_almost_equal(results['constraints'], [0., 1.5], decimal=11)
+            assert_array_almost_equal(results['multipliers'], [1., 0.], decimal=11)
+            assert_array_almost_equal(results['gradient'], [1., 1.], decimal=11)
 
-        assert results['num_majiter'] == 4
-        assert results['nfev'] == 4
-        assert results['ngev'] == 4
-        assert results['summary_filename'] == 'visualized_summary.out'
+            assert results['num_majiter'] == 4
+            assert results['nfev'] == 4
+            assert results['ngev'] == 4
+            assert results['summary_filename'] == 'visualized_summary.out'
 
     # Writing optimization data to a file
     global_vars.update(execute_python_code_snippet(python_code[5], global_vars=global_vars))
@@ -214,9 +215,10 @@ def test_postprocessing_notebook():
     # Loading variable iterates with major iterations only
     global_vars.update(execute_python_code_snippet(python_code[4], global_vars=global_vars))
 
-    # Visualizing saved optimization
-    if os.getenv("GITHUB_ACTIONS") is None: # Skip this test on GitHub Actions since it requires a display
-        global_vars.update(execute_python_code_snippet(python_code[5], global_vars=global_vars))
+    if 0: # Skip this test everytime, otherwise it will open a plot window even for `pytest -m "not visualize"`
+        # Visualizing saved optimization
+        if os.getenv("GITHUB_ACTIONS") is None: # Skip this test on GitHub Actions since it requires a display
+            global_vars.update(execute_python_code_snippet(python_code[5], global_vars=global_vars))
 
     # Warm start
     global_vars.update(execute_python_code_snippet(python_code[6], global_vars=global_vars))
