@@ -79,7 +79,7 @@ jobs:
         python -m pip install --upgrade pip
         brew reinstall gcc
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-        pip install pytest pytest-cov
+        pip install pytest
         pip install .
 
       # Finally, we run the package unit-tests on the specified OS and python versions.

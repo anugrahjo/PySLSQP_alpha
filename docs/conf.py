@@ -31,7 +31,7 @@ project = 'PySLSQP'
 copyright = '2024, Anugrah'
 author = 'Anugrah'
 version = __version__
-# release = 0.1.0rtc
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
