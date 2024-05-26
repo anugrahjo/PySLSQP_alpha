@@ -1,7 +1,4 @@
-# Includes the list of all dependencies required to run setup() and 
-# use the package in some new environment.
-# E.g., for creating a conda environement, or to be used in testing workflow, 
-# or to host the documentation on Read the Docs
+# List of all dependencies required to host the documentation on Read the Docs
 
 # For the documentation
 sphinx==5.3.0
