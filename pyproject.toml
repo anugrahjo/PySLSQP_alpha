@@ -43,7 +43,7 @@ classifiers=[
 Homepage = 'https://pyslsqp-alpha.readthedocs.io/en/latest/'
 Documentation = 'https://pyslsqp-alpha.readthedocs.io/en/latest/'
 Repository = "https://github.com/anugrahjo/pyslsqp_alpha"
-Issues = "https://github.com/anugrahjo/pyslsqp_alpha/issues"
+"Bug Tracker" = "https://github.com/anugrahjo/pyslsqp_alpha/issues"
 Changelog = "https://pyslsqp-alpha.readthedocs.io/en/latest/src/changelog.html"
 Download = "https://test.pypi.org/project/pyslsqp-alpha/#files"
 

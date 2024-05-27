@@ -5,7 +5,7 @@ project('pyslsqp', 'c',
   default_options : ['warning_level=2'],
 )
 
-add_languages('fortran')
+add_languages('fortran', native: false)
 
 py_mod = import('python')
 py = py_mod.find_installation(pure: false)

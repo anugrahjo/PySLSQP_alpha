@@ -39,6 +39,4 @@ if __name__ == "__main__":
         # include_package_data=True,
         package_data={'pyslsqp': ['*.so']}, # this is needed to include the shared object file in the build directory in site-pkgs
         # platforms=["Linux, Windows", "Mac OS X", "Unix", "POSIX", "Any"],
-        # install_requires=["numpy>=1.16", "h5py>=2.10", "matplotlib>=3.4"],
-                        #   "plotly", "dash", "ipywidgets"],
     )
