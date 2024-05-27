@@ -2,14 +2,22 @@ from setuptools import setup, find_packages
 import shutil
 import subprocess
 import os.path
+import sys
 
 def build_meson():
     meson = shutil.which('meson')
     builddir = 'meson_builddir'
     if meson is None:
         raise RuntimeError('meson not found in PATH')
-    subprocess.run([meson, 'setup', builddir])
-    subprocess.run([meson, 'compile', '-C', builddir])
+    
+    # Remove the old build directory if it exists
+    if os.path.exists(builddir):
+        shutil.rmtree(builddir)
+        import time
+        # time.sleep(10)
+
+    subprocess.run([meson, 'setup', builddir], check=True)
+    subprocess.run([meson, 'compile', '-C', builddir], check=True)
     build_path = os.path.join(os.getcwd(), builddir, 'pyslsqp')
     target_path = os.path.join(os.getcwd(), 'pyslsqp')
 
@@ -30,12 +38,15 @@ def build_meson():
         #             shutil.copytree(from_path, to_path)
 
 if __name__ == "__main__":
-    build_meson()
+    
+    # `build_meson()`` function is only called when the `setup.py`` script is not invoked with the sdist or egg_info command. 
+    # This prevents the Fortran compilation using Meson from happening when generating the source distribution.
+    # But it will still be executed when installing the package from the source distribution or building the wheel distribution.
+    if not ('sdist' in sys.argv or 'egg_info' in sys.argv):
+        build_meson()
 
     setup(
         name='pyslsqp',
-        packages=find_packages(where="."),
-        # package_dir={"": "pyslsqp"},
         # include_package_data=True,
         package_data={'pyslsqp': ['*.so']}, # this is needed to include the shared object file in the build directory in site-pkgs
         # platforms=["Linux, Windows", "Mac OS X", "Unix", "POSIX", "Any"],
