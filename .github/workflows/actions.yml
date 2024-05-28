@@ -128,8 +128,10 @@ jobs:
         python -m pip install numpy h5py matplotlib pytest
         pip install -e . -v
         cat meson_builddir/meson-logs/meson-log.txt
-        ls meson_builddir/pyslsqp
-        ls pyslsqp
+
+    - name: Verify compiled files
+      run: |
+        ls -l pyslsqp   
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
     - name: Test with pytest

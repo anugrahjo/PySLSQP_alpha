@@ -36,6 +36,7 @@ def build_meson():
                     continue
                 from_path = os.path.join(root, file)
                 to_path = os.path.join(target_path, file)
+                print(f"Copying {from_path} to {to_path}")
                 shutil.copy(from_path, to_path)
 
         # For windows
@@ -83,7 +84,7 @@ if __name__ == "__main__":
 
     setup(
         # include_package_data=True,
-        package_data={'pyslsqp': ['*.so']}, # this is needed to include the shared object file in the build directory in site-pkgs
+        package_data={'pyslsqp': ['*.so', '*.pyd']}, # this is needed to include the shared object file in the build directory in site-pkgs
         # cmdclass={'bdist_wheel': bdist_wheel},  # The cmdclass argument in the setup function is used to override default commands provided by setuptools.
         #                                         # This overrides the `bdist_wheel` command. BUT THIS IS SPECIFIC TO WHEELS DISTRIBUTION FORMAT ONLY.
         #                                         # The `bdist_wheel` command is used by setuptools to build a wheel distribution of our package. 
