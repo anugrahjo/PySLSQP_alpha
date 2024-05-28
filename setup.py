@@ -3,8 +3,16 @@ import shutil
 import subprocess
 import os.path
 import sys
+import platform
 
 def build_meson():
+    # Set the environment variables in Windows for the meson/Fortran compiler to use
+    if platform.system() == "Windows":
+        if not "FC" in os.environ:
+            os.environ["FC"] = "gfortran"
+        if not "CC" in os.environ:
+            os.environ["CC"] = "gcc"
+            
     meson = shutil.which('meson')
     builddir = 'meson_builddir'
     if meson is None:
@@ -23,9 +31,9 @@ def build_meson():
 
     for root, dirs, files in os.walk(build_path):
         for file in files:
-            # For windows
-            # if file.endswith('.so') or file.endswith(('.dll.a','.pyd')):
-            if file.endswith('.so'):
+            if file.endswith((".so", ".lib", ".pyd", ".pdb", ".dylib", ".dll")):
+                if ".so.p" in root or ".pyd.p" in root:  # excludes intermediate object files in .p directories
+                    continue
                 from_path = os.path.join(root, file)
                 to_path = os.path.join(target_path, file)
                 shutil.copy(from_path, to_path)
