@@ -37,8 +37,7 @@ jobs:
     - name: Install dependencies
       run: | 
         python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-        pip install pytest pytest-cov coveralls
+        pip install numpy h5py matplotlib pytest pytest-cov coveralls
         pip install -e .
 
       # Finally, we run the package unit-tests on the specified OS and python versions
@@ -78,8 +77,7 @@ jobs:
       run: | 
         python -m pip install --upgrade pip
         brew reinstall gcc
-        if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-        pip install pytest
+        pip install numpy h5py matplotlib pytest
         pip install .
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
@@ -99,25 +97,35 @@ jobs:
 
   #   steps:
   #     # The steps here are essentially command-line arguments that will be ran on the cloud with the above configurations  
-  #   - uses: actions/checkout@v4
+
+  #   - name: Install mingw-w64 for Windows
+  #     uses: msys2/setup-msys2@v2
+  #     with:
+  #       path-type: inherit
+  #       install: |
+  #         mingw-w64-x86_64-gcc
+  #         mingw-w64-x86_64-gcc-fortran
+    
+  #   - name: checkout repository
+  #     uses: actions/checkout@v4
+
   #   - name: Set up Python ${{ matrix.python-version }}
   #     uses: actions/setup-python@v5
   #     with:
   #       python-version: ${{ matrix.python-version }}
+  #       update-environment: true
 
   #     # Here we install the package of this repositories as well as other required packages 
   #   - name: Install dependencies
   #     shell: cmd
   #     run: | 
   #       python -m pip install --upgrade pip
-  #       if exist requirements.txt pip3 install -r requirements.txt
-  #       choco install mingw
-  #       choco install rtools -y --no-progress --force --version=4.0.0.20220206
-  #       pip install -e .
-  #       cat meson_builddir/meson-logs/meson-log.txt
-  #       cat meson_builddir/pyslsqp/_slsqp.cp310-win_amd64.pyd
-  #       ls meson_builddir/pyslsqp
-  #       ls pyslsqp
+  #       python -m pip install numpy h5py matplotlib pytest
+  #       pip install -v .
+  #       # cat meson_builddir/meson-logs/meson-log.txt
+  #       # cat meson_builddir/pyslsqp/_slsqp.cp310-win_amd64.pyd
+  #       # ls meson_builddir/pyslsqp
+  #       # ls pyslsqp
 
   #     # Finally, we run the package unit-tests on the specified OS and python versions.
   #   - name: Test with pytest

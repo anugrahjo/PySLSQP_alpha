@@ -29,9 +29,11 @@ formats:
    - epub
    - htmlzip
 
-# # Optionally declare the Python requirements required to build your docs
 # # The conda environment will be set up first using the environment.yml file, 
 # # and then pip will install any additional dependencies listed in the requirements.txt file.
+# # The above comment doesn't seem to be correct as build failed when the following was run
+# # instead of running it in the environment.yaml file
+# Optionally declare the Python requirements required to build your docs
 # python:
 #    install:
 #    - requirements: requirements.txt
