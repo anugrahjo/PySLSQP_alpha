@@ -129,11 +129,18 @@ jobs:
         pip install -v .
         cat meson_builddir/meson-logs/meson-log.txt
 
+    - name: Download Dependencies Tool
+      run: |
+        curl -LO https://github.com/lucasg/Dependencies/releases/download/v1.10/Dependencies_x64_Release.zip
+        unzip Dependencies_x64_Release.zip -d Dependencies
+
     - name: Verify compiled files
       run: |
         ls -l pyslsqp
         # List DLL dependencies of the compiled module
-        dumpbin /DEPENDENTS pyslsqp/_slsqp.pyd 
+        # dumpbin /DEPENDENTS pyslsqp/_slsqp.pyd 
+        Dependencies/Dependencies.exe /depends pyslsqp/_slsqp.pyd
+
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
     - name: Test with pytest
