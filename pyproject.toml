@@ -53,6 +53,11 @@ version = {attr = "pyslsqp.__version__"}
 [tool.setuptools]
 package-dir = {"" = "."}
 
+# [tool.setuptools.package-data]
+# If there are data files included in your packages that need to be
+# installed, specify them here.
+# "*" = ["meson*", "*.so", "*.lib", "*.pyd", "*.pdb", "*.dylib", "*.dll"]
+
 [tool.pytest.ini_options]
 markers = [
     "visualize: marks tests as visualize (deselect with '-m \"not visualize\"')",
