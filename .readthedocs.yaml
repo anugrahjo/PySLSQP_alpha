@@ -41,7 +41,7 @@ formats:
 # If using a conda environment, 
 # add the path to the Conda environment file, relative to the root of the project.
 conda:
-  environment: environment.yml
+  environment: environment.yaml
 
 # TODO: It's important to note that conda and pip don't always play nicely together. 
 # If we have dependencies that are available in both the conda and pip repositories, 
