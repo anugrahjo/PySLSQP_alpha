@@ -141,11 +141,11 @@ jobs:
         # dumpbin /DEPENDENTS pyslsqp/_slsqp.pyd 
         
         # dump FILE resolved modules
-        Dependencies/Dependencies.exe -modules pyslsqp/_slsqp.pyd
+        Dependencies/Dependencies.exe -modules pyslsqp/_slsqp.cp310-win_amd64.pyd
         # dump FILE whole dependency chain
-        Dependencies/Dependencies.exe -chain pyslsqp/_slsqp.pyd
+        Dependencies/Dependencies.exe -chain pyslsqp/_slsqp.cp310-win_amd64.pyd
         # dump all the system's known dlls (x86 and x64)
-        Dependencies/Dependencies.exe -knowndlls pyslsqp/_slsqp.pyd
+        Dependencies/Dependencies.exe -knowndlls pyslsqp/_slsqp.cp310-win_amd64.pyd
 
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
