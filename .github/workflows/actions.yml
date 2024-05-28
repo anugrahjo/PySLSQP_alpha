@@ -71,6 +71,7 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        update-environment: true
 
       # Here we install the package of this repositories as well as other required packages 
     - name: Install dependencies
