@@ -30,6 +30,8 @@ formats:
    - htmlzip
 
 # Optionally declare the Python requirements required to build your docs
+# The conda environment will be set up first using the environment.yml file, 
+# and then pip will install any additional dependencies listed in the requirements.txt file.
 python:
    install:
    - requirements: requirements.txt
@@ -38,5 +40,12 @@ python:
 
 # If using a conda environment, 
 # add the path to the Conda environment file, relative to the root of the project.
-# conda:
-#   environment: environment.yml
+conda:
+  environment: environment.yml
+
+# TODO: It's important to note that conda and pip don't always play nicely together. 
+# If we have dependencies that are available in both the conda and pip repositories, 
+# it's generally a good idea to install them using the same tool to avoid any potential conflicts.
+# If all our dependencies are available in the conda repositories, we might want to consider moving all 
+# our dependencies to the environment.yml file and removing the python: install: section from our .readthedocs.yaml file. 
+# This way, all our dependencies will be installed using conda.

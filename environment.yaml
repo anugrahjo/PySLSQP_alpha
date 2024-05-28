@@ -1,0 +1,36 @@
+# List of all dependencies required to host the documentation on Read the Docs
+# Read the Docs uses container-based builds, and by default, these containers don't have gfortran installed. 
+# Therefore, defining a conda environment is necessary, pip cannot handle gfortran installation.
+# conda can slow down our Read the Docs builds, because conda environments take longer to create than virtualenv environments. 
+# However, this is currently the best way to install gfortran on Read the Docs.
+
+name: docs
+channels:
+  - conda-forge
+dependencies:
+  - gfortran_linux-64  # for Linux builds
+  # - gfortran_osx-64    # for macOS builds
+  # - python=3.11
+  # - sphinx
+  
+  # - pip:
+  #   # For the documentation
+  #   - sphinx==5.3.0
+  #   - myst-nb==0.17.2
+  #   - sphinx_rtd_theme==1.1.1 
+  #   - sphinx-copybutton==0.5.2
+  #   - numpydoc==1.5.0
+  #   - gitpython==3.1.31
+  #   - sphinxcontrib-bibtex==2.5.0
+  #   - astroid==2.15.5
+
+  #   # For the build
+  #   - setuptools
+  #   - ninja
+  #   - meson
+  #   - numpy
+
+  #   # For the package itself
+  #   - numpy==1.24.3
+  #   - h5py
+  #   - matplotlib >= 3.4.3, < 3.9
