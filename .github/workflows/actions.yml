@@ -122,7 +122,7 @@ jobs:
 
       # Here we install PySLSQP as well as other required packages 
     - name: Install dependencies and PySLSQP
-      # shell: cmd
+      shell: msys2 {0}
       run: | 
         python -m pip install --upgrade pip
         python -m pip install numpy h5py matplotlib pytest
@@ -137,15 +137,15 @@ jobs:
     - name: Verify compiled files
       run: |
         ls -l pyslsqp
-        # List DLL dependencies of the compiled module
+        # # List DLL dependencies of the compiled module
         # dumpbin /DEPENDENTS pyslsqp/_slsqp.pyd 
         
         # dump FILE resolved modules
         Dependencies/Dependencies.exe -modules pyslsqp/_slsqp.cp310-win_amd64.pyd
-        # dump FILE whole dependency chain
-        Dependencies/Dependencies.exe -chain pyslsqp/_slsqp.cp310-win_amd64.pyd
-        # dump all the system's known dlls (x86 and x64)
-        Dependencies/Dependencies.exe -knowndlls pyslsqp/_slsqp.cp310-win_amd64.pyd
+        # # dump FILE whole dependency chain
+        # Dependencies/Dependencies.exe -chain pyslsqp/_slsqp.cp310-win_amd64.pyd
+        # # dump all the system's known dlls (x86 and x64)
+        # Dependencies/Dependencies.exe -knowndlls pyslsqp/_slsqp.cp310-win_amd64.pyd
 
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
