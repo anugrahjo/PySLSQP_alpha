@@ -9,8 +9,9 @@ channels:
   - conda-forge
 dependencies:
   - gfortran_linux-64  # for Linux builds
+  - pip
+  - python=3.11
   # - gfortran_osx-64    # for macOS builds
-  # - python=3.11
   # - sphinx
   
   # - pip:
