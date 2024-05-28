@@ -13,11 +13,11 @@ def build_meson():
     # Remove the old build directory if it exists
     if os.path.exists(builddir):
         shutil.rmtree(builddir)
-        import time
-        # time.sleep(10)
 
+    # Set up and compile the project using Meson
     subprocess.run([meson, 'setup', builddir], check=True)
     subprocess.run([meson, 'compile', '-C', builddir], check=True)
+
     build_path = os.path.join(os.getcwd(), builddir, 'pyslsqp')
     target_path = os.path.join(os.getcwd(), 'pyslsqp')
 
@@ -29,6 +29,7 @@ def build_meson():
                 from_path = os.path.join(root, file)
                 to_path = os.path.join(target_path, file)
                 shutil.copy(from_path, to_path)
+
         # For windows
         # for dir in dirs:
         #     if dir.endswith('.pyd.p'):
@@ -36,6 +37,33 @@ def build_meson():
         #         to_path = os.path.join(target_path, dir)
         #         if not os.path.exists(to_path):
         #             shutil.copytree(from_path, to_path)
+
+# ==================================================================================================
+# The following forces the generated wheels to be platform specific
+# This is necessary because the shared object file is platform specific
+# and the wheel would not be installable on other platforms
+# if it is marked as a universal wheel (purelib) as setuptools would do by default
+# since it is unaware that the package_data is compiled 
+# (since it is not compiled as a part of the setup process)
+
+# from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
+
+# class bdist_wheel(_bdist_wheel):
+#     def finalize_options(self):
+#         # _bdist_wheel.finalize_options(self)
+#         super().finalize_options()
+#         self.root_is_pure = False
+# The `bdist_wheel` class we've defined inherits from `wheel.bdist_wheel.bdist_wheel`, which is the default bdist_wheel command provided by setuptools. 
+# In our `bdist_wheel` class, we're overriding the `finalize_options` method to set `self.root_is_pure` to `False`. 
+# This tells setuptools that our package is not pure Python, i.e., it contains extensions such as C or Fortran extensions, 
+# and therefore the wheel it creates should be platform-specific rather than universal.
+
+from setuptools.dist import Distribution
+class BinaryDistribution(Distribution):
+    """Distribution which always forces a binary package with platform name"""
+    def has_ext_modules(foo):
+        return True
+# ==================================================================================================
 
 if __name__ == "__main__":
     
@@ -46,8 +74,15 @@ if __name__ == "__main__":
         build_meson()
 
     setup(
-        name='pyslsqp',
         # include_package_data=True,
         package_data={'pyslsqp': ['*.so']}, # this is needed to include the shared object file in the build directory in site-pkgs
+        # cmdclass={'bdist_wheel': bdist_wheel},  # The cmdclass argument in the setup function is used to override default commands provided by setuptools.
+        #                                         # This overrides the `bdist_wheel` command. BUT THIS IS SPECIFIC TO WHEELS DISTRIBUTION FORMAT ONLY.
+        #                                         # The `bdist_wheel` command is used by setuptools to build a wheel distribution of our package. 
+        #                                         # By overriding this command, we can customize how the wheel distribution is built.
+        distclass=BinaryDistribution,   # The `distclass` argument in the `setup` function is used to specify a custom distribution class. 
+                                        # Basically, you override the 'has_ext_modules' function in the Distribution class, and set distclass to point to the overriding class. 
+                                        # At that point, setup.py will believe you have a binary distribution, and will create a wheel with the specific version of python, 
+                                        # the ABI, and the current architecture. This is not specific to wheels, and any distribution built with setuptools will be affected.
         # platforms=["Linux, Windows", "Mac OS X", "Unix", "POSIX", "Any"],
     )
