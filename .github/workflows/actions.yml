@@ -89,6 +89,11 @@ jobs:
     # The tests will run on ubuntu with python versions 3.8, 3.9, and 3.10.
     # Add other OSes like windows and macOS if needed as well as other Python versions  
     runs-on: windows-latest
+
+    defaults:
+      run:
+          shell: bash -el {0}
+
     strategy:
       fail-fast: false
       matrix:
@@ -115,15 +120,14 @@ jobs:
         python-version: ${{ matrix.python-version }}
         update-environment: true
 
-      # Here we install the package of this repositories as well as other required packages 
-    - name: Install dependencies
-      shell: cmd
+      # Here we install PySLSQP as well as other required packages 
+    - name: Install dependencies and PySLSQP
+      # shell: cmd
       run: | 
         python -m pip install --upgrade pip
         python -m pip install numpy h5py matplotlib pytest
         pip install -v .
         cat meson_builddir/meson-logs/meson-log.txt
-        cat meson_builddir/pyslsqp/_slsqp.cp310-win_amd64.pyd
         ls meson_builddir/pyslsqp
         ls pyslsqp
 
