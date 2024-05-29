@@ -128,7 +128,7 @@ jobs:
 
       # Here we install PySLSQP as well as other required packages 
     - name: Install dependencies and PySLSQP
-      shell: msys2 {0}
+      # shell: msys2 {0} # Only works when  "Install mingw-w64 for Windows" is used
       run: | 
         python -m pip install --upgrade pip
         python -m pip install numpy h5py matplotlib pytest
