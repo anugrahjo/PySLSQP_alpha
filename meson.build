@@ -16,6 +16,9 @@ incdir_numpy = run_command(py,
   check : true
 ).stdout().strip()
 
+# this creates a raw string which is useful for Windows use of '\' for paths
+incdir_numpy = '''@0@'''.format(incdir_numpy)
+
 incdir_f2py = run_command(py,
     ['-c', 'import os; os.chdir(".."); import numpy.f2py; print(numpy.f2py.get_include())'],
     check : true
