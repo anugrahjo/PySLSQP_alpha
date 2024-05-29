@@ -104,13 +104,18 @@ jobs:
     steps:
       # The steps here are essentially command-line arguments that will be ran on the cloud with the above configurations  
 
-    - name: Install mingw-w64 for Windows
-      uses: msys2/setup-msys2@v2
-      with:
-        path-type: inherit
-        install: |
-          mingw-w64-x86_64-gcc
-          mingw-w64-x86_64-gcc-fortran
+    # - name: Install mingw-w64 for Windows
+    #   uses: msys2/setup-msys2@v2
+    #   with:
+    #     path-type: inherit
+    #     install: |
+    #       mingw-w64-x86_64-gcc
+    #       mingw-w64-x86_64-gcc-fortran
+
+    - name: Install rtools (mingw-w64)
+      run: |
+        choco install rtools -y --no-progress --force --version=4.0.0.20220206
+        echo "c:\rtools40\ucrt64\bin;" >> $env:GITHUB_PATH
     
     - name: checkout repository
       uses: actions/checkout@v4
