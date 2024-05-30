@@ -20,10 +20,10 @@ concurrency:
 
 # Here, we specify the automatic cloud based testing that will be ran on pushes/PRs to "main"
 jobs:
-  master-build-and-test-ubuntu:
+  master-build-test-upload-coverage-ubuntu:
 
-    # The tests will run on ubuntu with python versions 3.8, 3.9, and 3.10.
-    # Add other OSes like windows and macOS if needed as well as other Python versions  
+    # The tests will run on ubuntu with python version 3.10.
+    # It will upload the coverage report to coveralls
     # runs-on: ${{ matrix.os }}
     runs-on: ubuntu-latest
     strategy:
@@ -60,16 +60,15 @@ jobs:
         github-token: ${{ secrets.COVERALLS_REPO_TOKEN}}
         file: ./coverage.lcov
 
-  build-and-test-macos:
-    # The tests will run on ubuntu with python versions 3.8, 3.9, and 3.10.
-    # Add other OSes like windows and macOS if needed as well as other Python versions  
-    # runs-on: ${{ matrix.os }}
-    runs-on: macos-latest
+  build-and-test-macos-ubuntu:
+    # The tests will run on ubuntu and macos with python versions 3.8, 3.9, 3.10, 3.11, and 3.12.
+    runs-on: ${{ matrix.os }}
+    # runs-on: macos-latest
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macOS-latest]
         # os: [ubuntu-latest, windows-latest, macOS-latest]
-        # python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
