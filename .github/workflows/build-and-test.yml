@@ -10,6 +10,14 @@ on:
   pull_request:
     branches: [ "main" ]
 
+defaults:
+  run:
+    shell: bash -l {0}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # Here, we specify the automatic cloud based testing that will be ran on pushes/PRs to "main"
 jobs:
   master-build-and-test-ubuntu:
@@ -62,7 +70,7 @@ jobs:
       matrix:
         # os: [ubuntu-latest, windows-latest, macOS-latest]
         # python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
       # The steps here are essentially command-line arguments that will be ran on the cloud with the above configurations  
