@@ -7,7 +7,7 @@
 [![PyPI Monthly Downloads][12]][11]
 -->
 
-[![GitHub Actions Test Badge](https://github.com/anugrahjo/PySLSQP_alpha/actions/workflows/actions.yml/badge.svg)](https://github.com/anugrahjo/PySLSQP_alpha/actions)
+[![GitHub Actions Test Badge](https://github.com/anugrahjo/PySLSQP_alpha/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/anugrahjo/PySLSQP_alpha/actions)
 [![Coverage Status](https://coveralls.io/repos/github/anugrahjo/PySLSQP_alpha/badge.svg?branch=main)](https://coveralls.io/github/anugrahjo/PySLSQP_alpha?branch=main)
 [![Forks](https://img.shields.io/github/forks/anugrahjo/PySLSQP_alpha.svg)](https://github.com/anugrahjo/PySLSQP_alpha/network)
 [![Issues](https://img.shields.io/github/issues/anugrahjo/PySLSQP_alpha.svg)](https://github.com/anugrahjo/PySLSQP_alpha/issues)
