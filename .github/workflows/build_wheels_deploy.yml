@@ -26,8 +26,20 @@ jobs:
         # macos-13 is an intel runner, macos-14 is apple silicon
         os: [ubuntu-latest, windows-latest, macos-13, macos-14]
 
-    steps:
-      - uses: actions/checkout@v4
+    steps:      
+      - name: Checkout the repository to the GitHub runner
+        uses: actions/checkout@v4
+      
+      - name: reinstall gcc for macos
+        if: contains(matrix.os, 'macos')
+        run: | 
+          brew reinstall gcc
+
+      - name: Install rtools (mingw-w64) for Windows
+        if: contains(matrix.os, 'windows')
+        run: |
+          choco install rtools -y --no-progress --force --version=4.0.0.20220206
+          echo "c:\rtools40\ucrt64\bin;" >> $env:GITHUB_PATH
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.18.1

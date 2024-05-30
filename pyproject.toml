@@ -76,8 +76,8 @@ omit = [
     ]
 
 [tool.cibuildwheel]
-# Disable building for PyPy, 32bit, and Python 3.6 and 3.7
-skip = ["pp*", "cp36-*", "cp37-*", "*-win32", "*-manylinux_i686"]
+# Disable building for PyPy, 32bit
+skip = ["pp*", "*-win32", "*-manylinux_i686"]
 build-frontend = { name = "build", args = ["--wheel"] }
 test-requires = "pytest"
 test-command = "pytest {project}/tests -m 'not visualize'"
