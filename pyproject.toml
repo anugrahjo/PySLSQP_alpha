@@ -80,4 +80,4 @@ omit = [
 skip = ["pp*", "cp36-*", "cp37-*", "*-win32", "*-manylinux_i686"]
 build-frontend = { name = "build", args = ["--wheel"] }
 test-requires = "pytest"
-test-command = "pytest {project}/tests"
+test-command = "pytest {project}/tests -m 'not visualize'"
