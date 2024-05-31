@@ -25,11 +25,11 @@ jobs:
     # The tests will run on ubuntu with python version 3.10.
     # It will upload the coverage report to coveralls
     # runs-on: ${{ matrix.os }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        # os: [ubuntu-latest, windows-latest, macos-latest]
+        # os: [ubuntu-22.04, windows-2022, macos-14]
         # python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         python-version: ["3.10"]
 
@@ -63,12 +63,12 @@ jobs:
   build-and-test-macos-ubuntu:
     # The tests will run on ubuntu and macos with python versions 3.8, 3.9, 3.10, 3.11, and 3.12.
     runs-on: ${{ matrix.os }}
-    # runs-on: macos-latest
+    # runs-on: macos-14
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        # os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-22.04, macos-14]
+        # os: [ubuntu-22.04, windows-2022, macos-14]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
@@ -101,7 +101,7 @@ jobs:
   build-windows:
     # The tests will run on ubuntu with python versions 3.8, 3.9, and 3.10.
     # Add other OSes like windows and macos if needed as well as other Python versions  
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     defaults:
       run:
