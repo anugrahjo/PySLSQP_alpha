@@ -13,33 +13,9 @@ def build_meson():
         if not "CC" in os.environ:
             os.environ["CC"] = "gcc"
 
+    # Set the extra compile arguments for the meson build in future 
+    # for cross-platform compilation when generating wheels on github runners
     extra_compile_args = []
-    # extra_link_args = []
-
-    if os.getenv("GITHUB_ACTIONS") is not None:
-        # Detect the target architecture
-        target_arch = os.environ.get('TARGET_ARCH', None)
-        
-        # Modify the build process based on the target architecture
-        if target_arch == 'arm64':
-            with open('cross_file_arm64.txt', 'w') as f:
-                f.write('''
-    [binaries]
-    c = '/usr/bin/gcc'
-    fortran = '/usr/local/bin/gfortran'            
-    cpp = '/usr/bin/gcc'
-    ar = '/usr/bin/ar'
-    strip = 'usr/bin/strip'
-    pkg-config = 'pkg-config'
-                        
-    [host_machine]
-    system = 'darwin'
-    cpu_family = 'aarch64'
-    cpu = 'arm64'
-    endian = 'little'
-    ''')
-            extra_compile_args = extra_compile_args + ['--cross-file', 'cross_file_arm64.txt']
-            # extra_link_args.append('-target aarch64-unknown-linux-gnu')
             
     meson = shutil.which('meson')
     builddir = 'meson_builddir'
