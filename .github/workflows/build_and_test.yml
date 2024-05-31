@@ -18,7 +18,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# Here, we specify the automatic cloud based testing that will be ran on pushes/PRs to "main"
+# Here, we specify the automatic cloud based testing that will be run on pushes/PRs to "main"
 jobs:
   master-build-test-upload-coverage-ubuntu:
 
