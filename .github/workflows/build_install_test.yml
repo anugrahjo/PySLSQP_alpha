@@ -45,7 +45,7 @@ jobs:
     - name: Install dependencies
       run: | 
         python -m pip install --upgrade pip
-        python -m pip install numpy h5py matplotlib pytest pytest-cov coveralls
+        python -m pip install pytest pytest-cov coveralls
         python -m pip install -e .
 
       # Finally, we run the package unit-tests on the specified OS and python versions
@@ -89,7 +89,7 @@ jobs:
     - name: Install dependencies
       run: | 
         python -m pip install --upgrade pip
-        python -m pip install numpy h5py matplotlib pytest
+        python -m pip install pytest
         python -m pip install .
 
       # Finally, we run the package unit-tests on the specified OS and python versions.
@@ -143,7 +143,7 @@ jobs:
       # shell: msys2 {0} # Only works when  "Install mingw-w64 for Windows" is used
       run: | 
         python -m pip install --upgrade pip
-        python -m pip install numpy h5py matplotlib pytest
+        python -m pip install pytest
         python -m pip install -e .  # Install the package in editable mode, "pip install ." did not seem to copy the compiled files to the site-packages directory
         # cat meson_builddir/meson-logs/meson-log.txt
 
