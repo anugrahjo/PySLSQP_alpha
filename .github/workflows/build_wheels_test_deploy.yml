@@ -251,6 +251,9 @@ jobs:
           ls -l
           echo "Listing files in dist/"
           ls -l dist/
+          pip install numpy h5py scipy 
+          # Explicit dependency installation above is needed since we are using --no-index below
+          # which prevents pip from downloading the dependencies from PyPI
           python -m pip install --no-index --find-links=./dist/ pyslsqp
           python -m pip install pytest
 
