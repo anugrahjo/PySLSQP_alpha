@@ -223,6 +223,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, macos-13, macos-14]
         os: [ubuntu-20.04]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     
@@ -245,9 +246,12 @@ jobs:
       - name: Install the built wheels
         run: |
           python -m pip install --upgrade pip
+          echo "Listing files in the root directory"
+          ls -l
+          echo "Listing files in dist/"
+          ls -l dist/
           python -m pip install --no-index --find-links=./dist/ pyslsqp
           python -m pip install pytest
-          ls -l dist/
 
       - name: Run tests
         run: |
