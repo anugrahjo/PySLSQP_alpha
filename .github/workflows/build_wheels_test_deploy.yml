@@ -70,6 +70,9 @@ jobs:
         uses: pypa/cibuildwheel@v2.18.1
         env:
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="12.0"
+          # Cross-compiling for apple silicon arm64 on an intel x86_64 runner but cannot be tested
+          CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
+          CIBW_TEST_SKIP: "*-macosx_universal2:arm64 *-macosx_arm64"
           # Warning: Setting SYSTEM_VERSION_COMPAT=0 to ensure CPython 3.8 can get correct 
           # macOS version and allow installation of wheels with MACOSX_DEPLOYMENT_TARGET >= 11.0. 
           # See https://github.com/pypa/cibuildwheel/issues/1767 for the details.
@@ -81,6 +84,9 @@ jobs:
         uses: pypa/cibuildwheel@v2.18.1
         env:
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="13.0"
+          # Cross-compiling for apple silicon arm64 on an intel x86_64 runner but cannot be tested
+          CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
+          CIBW_TEST_SKIP: "*-_universal2:arm64 *_arm64"
           # Warning: Setting SYSTEM_VERSION_COMPAT=0 to ensure CPython 3.8 can get correct 
           # macOS version and allow installation of wheels with MACOSX_DEPLOYMENT_TARGET >= 11.0. 
           # See https://github.com/pypa/cibuildwheel/issues/1767 for the details.
@@ -100,7 +106,10 @@ jobs:
           # See the discussion in https://github.com/pypa/cibuildwheel/pull/1169 for the details. 
           # To silence this warning: set CIBW_TEST_SKIP=cp38-macosx_*:arm64
           # Also skip tests for cross compiled wheels
-          CIBW_TEST_SKIP: "cp38-macosx_*:arm64 *-macosx_universal2:x86_64 *-macosx_x86_64"
+          # Note: On an arm64 runner, it is possible to test x86_64 wheels and 
+          # both parts of a universal2 wheel using Rosetta 2 emulation.
+          CIBW_SKIP: "cp38-macosx_*:universal2"
+          CIBW_TEST_SKIP: "cp38-macosx_*:arm64 *_universal2:x86_64 *_x86_64"
           # Warning: gcc@13 13.2.0 is already installed and up-to-date. 
           # To reinstall 13.2.0, run: brew reinstall gcc@13
 
