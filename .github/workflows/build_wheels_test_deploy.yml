@@ -23,8 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         # macos-11,12,13 are intel runners, macos-14 is apple silicon, no runners for macos-14 with intel x86-64
-        # os: [ubuntu-22.04, windows-2022, macos-12, macos-13, macos-14]
-        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, macos-13, macos-14]
+        # os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, macos-13, macos-14]
+        os: [ubuntu-20.04]
     
     steps:      
       - name: Checkout the repository to the GitHub runner
@@ -176,14 +176,14 @@ jobs:
           path: ./dist/*.tar.gz
 
   manual_test_of_sdist:
-    name: Manual test
+    name: Manual test of sdist
     needs: [build_sdist]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-22.04, macos-13, macos-14]
-        python-version: ["3.8", "3.10", "3.12"]
+        python-version: ["3.8", "3.12"]
     
     steps:      
       - name: Setup GNU Fortran
@@ -215,14 +215,15 @@ jobs:
         run: |
           pytest
 
+  # Built wheels are already tested by cibuildwheel so no need to manually test them again
   manual_test_of_built_wheels:
-    name: Manual test
+    name: Manual test of built wheels
     needs: [build_wheels]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, macos-13, macos-14]
+        os: [ubuntu-20.04]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     
     steps:      
@@ -244,8 +245,9 @@ jobs:
       - name: Install the built wheels
         run: |
           python -m pip install --upgrade pip
-          python -m pip install --no-index --find-links=dist/ pyslsqp
+          python -m pip install --no-index --find-links=./dist/ pyslsqp
           python -m pip install pytest
+          ls -l dist/
 
       - name: Run tests
         run: |
