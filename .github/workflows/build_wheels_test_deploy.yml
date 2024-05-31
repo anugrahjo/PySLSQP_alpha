@@ -63,8 +63,6 @@ jobs:
           # Warning: Setting SYSTEM_VERSION_COMPAT=0 to ensure CPython 3.8 can get correct 
           # macOS version and allow installation of wheels with MACOSX_DEPLOYMENT_TARGET >= 11.0. 
           # See https://github.com/pypa/cibuildwheel/issues/1767 for the details.
-          # Warning: gcc@13 13.2.0 is already installed and up-to-date. 
-          # To reinstall 13.2.0, run: brew reinstall gcc@13
 
       - name: Build macos-12 wheels
         if: contains( matrix.os, 'macos-12')
@@ -150,7 +148,9 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
+          # Name of the artifact to upload.
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          # A file, directory or wildcard pattern that describes what to upload. Required.
           path: ./wheelhouse/*.whl
 
   build_sdist:
@@ -174,7 +174,77 @@ jobs:
         with:
           name: cibw-sdist
           path: ./dist/*.tar.gz
-  
+
+  manual_test_of_sdist:
+    name: Manual test
+    needs: [build_sdist]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, macos-13, macos-14]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+    
+    steps:      
+      - name: Checkout the repository to the GitHub runner
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          update-environment: true
+    
+      - uses: actions/download-artifact@v4
+        with:
+          name: cibw-sdist
+          # destination path
+          path: dist
+
+      - name: Install the sdist
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ./dist/*.tar.gz
+
+      - name: Run tests
+        run: |
+          pytest
+
+  manual_test_of_built_wheels:
+    name: Manual test
+    needs: [build_wheels]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, macos-13, macos-14]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+    
+    steps:      
+      - name: Checkout the repository to the GitHub runner
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          update-environment: true
+    
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: cibw-wheels-*
+          # destination path
+          path: dist
+
+      - name: Install the built wheels
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --no-index --find-links=dist/ pyslsqp
+
+      - name: Run tests
+        run: |
+          pytest
+
   # This job uploads the built wheels and source distribution to PyPI.
   # It runs only when a release is published or when a v* tag is pushed.
   upload_pypi:
