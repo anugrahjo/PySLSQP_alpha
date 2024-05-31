@@ -80,7 +80,8 @@ omit = [
 # There's no h5py pre-built package for musllinux, so pip will try to build h5py from source, 
 # and it will fail building since pip won't be able to find and load HDF5.
 skip = ["pp*", "*-win32", "*-manylinux_i686", "*-musllinux*"]
-build-frontend = { name = "build", args = ["--wheel", "--no-isolation"] }
-before-build = "pip install wheel numpy ninja setuptools meson meson-python wheel" # This is required since we call build with --no-isolation
+build-frontend = { name = "build", args = ["--wheel"] }
+# build-frontend = { name = "build", args = ["--wheel", "--no-isolation"] }
+# before-build = "pip install wheel numpy ninja setuptools meson meson-python wheel" # This is required if we call build with --no-isolation above
 test-requires = "pytest"
 test-command = 'pytest {project}/tests -m "not visualize"'
