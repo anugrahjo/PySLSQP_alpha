@@ -12,6 +12,34 @@ def build_meson():
             os.environ["FC"] = "gfortran"
         if not "CC" in os.environ:
             os.environ["CC"] = "gcc"
+
+    extra_compile_args = []
+    # extra_link_args = []
+
+    if os.getenv("GITHUB_ACTIONS") is not None:
+        # Detect the target architecture
+        target_arch = os.environ.get('TARGET_ARCH', None)
+        
+        # Modify the build process based on the target architecture
+        if target_arch == 'arm64':
+            with open('cross_file_arm64.txt', 'w') as f:
+                f.write('''
+    [binaries]
+    c = '/usr/bin/gcc'
+    fortran = '/usr/local/bin/gfortran'            
+    cpp = '/usr/bin/gcc'
+    ar = '/usr/bin/ar'
+    strip = 'usr/bin/strip'
+    pkg-config = 'pkg-config'
+                        
+    [host_machine]
+    system = 'darwin'
+    cpu_family = 'aarch64'
+    cpu = 'arm64'
+    endian = 'little'
+    ''')
+            extra_compile_args = extra_compile_args + ['--cross-file', 'cross_file_arm64.txt']
+            # extra_link_args.append('-target aarch64-unknown-linux-gnu')
             
     meson = shutil.which('meson')
     builddir = 'meson_builddir'
@@ -23,7 +51,7 @@ def build_meson():
         shutil.rmtree(builddir)
 
     # Set up and compile the project using Meson
-    subprocess.run([meson, 'setup', builddir], check=True)
+    subprocess.run([meson, 'setup', *extra_compile_args, builddir], check=True)
     subprocess.run([meson, 'compile', '-C', builddir], check=True)
 
     build_path = os.path.join(os.getcwd(), builddir, 'pyslsqp')
