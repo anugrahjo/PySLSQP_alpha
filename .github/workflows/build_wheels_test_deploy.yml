@@ -30,6 +30,12 @@ jobs:
     steps:      
       - name: Checkout the repository to the GitHub runner
         uses: actions/checkout@v4
+      
+        # TODO: Comment the following line later
+      - name: List the github runner details
+        run: |
+          echo ${{github.event_name}} 
+          echo ${{github.event.action}}
 
       - name: Setup GNU Fortran
         if: false == contains( matrix.os, 'windows')
@@ -91,8 +97,6 @@ jobs:
         uses: pypa/cibuildwheel@v2.18.1
         env:
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="13.0"
-          # TODO: Comment the following line later
-          CIBW_BUILD: "cp38-* cp312-*"
           # Warning: Setting SYSTEM_VERSION_COMPAT=0 to ensure CPython 3.8 can get correct 
           # macOS version and allow installation of wheels with MACOSX_DEPLOYMENT_TARGET >= 11.0. 
           # See https://github.com/pypa/cibuildwheel/issues/1767 for the details.
@@ -138,6 +142,10 @@ jobs:
       - name: Build linux and windows wheels
         if: false == contains( matrix.os, 'macos')
         uses: pypa/cibuildwheel@v2.18.1
+
+        # TODO: Comment the following 2 lines later
+        env:
+          CIBW_BUILD: "cp38-* cp312-*"
         # env:
         #   CIBW_SOME_OPTION: value
         #   # Disable building for PyPy, 32bit
