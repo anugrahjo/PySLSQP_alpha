@@ -4,6 +4,8 @@ on:
   # This allows the workflow to be manually triggered from the GitHub UI.
   workflow_dispatch:
   push:
+    # The workflow is triggered if either of the 2 conditions below is satisfied
+    # This triggers the workflow on push events to the main branch.
     branches: [ "main" ]
   # To trigger the workflow on push events with matching v*, e.g., v1.0, v20.15.10
     tags: ['v*']  # Push events to matching v*, i.e. v1.0, v20.15.10
@@ -279,7 +281,7 @@ jobs:
   # It runs only when a release is published or when a v* tag is pushed.
   upload_pypi:
     name: Upload to PyPI
-    needs: [build_wheels, build_sdist]
+    needs: [build_wheels, build_sdist, manual_test_of_sdist]
     runs-on: ubuntu-22.04
     environment: testpypi
     # environment: pypi
