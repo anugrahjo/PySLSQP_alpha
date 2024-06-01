@@ -5,8 +5,8 @@ on:
   workflow_dispatch:
   push:
     branches: [ "main" ]
-  # # To trigger the workflow on push events with matching v*, e.g., v1.0, v20.15.10
-  #   tags: ['v*']  # Push events to matching v*, i.e. v1.0, v20.15.10
+  # To trigger the workflow on push events with matching v*, e.g., v1.0, v20.15.10
+    tags: ['v*']  # Push events to matching v*, i.e. v1.0, v20.15.10
   pull_request:
     branches: [ "main" ]
 
