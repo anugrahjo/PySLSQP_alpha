@@ -23,7 +23,9 @@ jobs:
       fail-fast: false
       matrix:
         # macos-11,12,13 are intel runners, macos-14 is apple silicon, no runners for macos-14 with intel x86-64
-        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, macos-13, macos-14]
+        # TODO: Uncomment the following line later
+        # os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, macos-13, macos-14]
+        os: [ubuntu-20.04]
     
     steps:      
       - name: Checkout the repository to the GitHub runner
@@ -89,6 +91,8 @@ jobs:
         uses: pypa/cibuildwheel@v2.18.1
         env:
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="13.0"
+          # TODO: Comment the following line later
+          CIBW_BUILD: "cp38-* cp312-*"
           # Warning: Setting SYSTEM_VERSION_COMPAT=0 to ensure CPython 3.8 can get correct 
           # macOS version and allow installation of wheels with MACOSX_DEPLOYMENT_TARGET >= 11.0. 
           # See https://github.com/pypa/cibuildwheel/issues/1767 for the details.
@@ -175,7 +179,7 @@ jobs:
           path: ./dist/*.tar.gz
 
   # sdists are not tested by cibuildwheel so we need to test them manually
-  # We are only running a limited nomber of configurations here to save actions minutes
+  # We are only running a limited number of configurations here to save actions minutes
   manual_test_of_sdist:
     name: Manual test of sdist
     needs: [build_sdist]
