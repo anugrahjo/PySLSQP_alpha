@@ -35,7 +35,7 @@ jobs:
       - name: List the github runner details
         run: |
           echo ${{github.event_name}} 
-          echo ${{github.event.action}}
+          echo ${{github.ref}}
 
       - name: Setup GNU Fortran
         if: false == contains( matrix.os, 'windows')
