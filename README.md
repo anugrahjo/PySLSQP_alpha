@@ -9,6 +9,7 @@
 
 [![GitHub Actions Test Badge](https://github.com/anugrahjo/PySLSQP_alpha/actions/workflows/build_install_test.yml/badge.svg)](https://github.com/anugrahjo/PySLSQP_alpha/actions)
 [![Coverage Status](https://coveralls.io/repos/github/anugrahjo/PySLSQP_alpha/badge.svg?branch=main)](https://coveralls.io/github/anugrahjo/PySLSQP_alpha?branch=main)
+[![Pypi version](https://img.shields.io/test.pypi/v/pyslsqp)](https://test.pypi.org/project/pyslsqp/)
 [![Forks](https://img.shields.io/github/forks/anugrahjo/PySLSQP_alpha.svg)](https://github.com/anugrahjo/PySLSQP_alpha/network)
 [![Issues](https://img.shields.io/github/issues/anugrahjo/PySLSQP_alpha.svg)](https://github.com/anugrahjo/PySLSQP_alpha/issues)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/anugrahjo/PySLSQP_alpha/blob/main/LICENSE.txt)

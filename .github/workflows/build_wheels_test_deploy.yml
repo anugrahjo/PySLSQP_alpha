@@ -1,4 +1,5 @@
-name: Build, test, and upload to PyPI
+# Build, test, and upload to PyPI
+name: Publish
 
 on:
   # This allows the workflow to be manually triggered from the GitHub UI.
@@ -25,19 +26,13 @@ jobs:
       fail-fast: false
       matrix:
         # macos-11,12,13 are intel runners, macos-14 is apple silicon, no runners for macos-14 with intel x86-64
-        # TODO: Uncomment the following line later
-        # os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, macos-13, macos-14]
-        os: [ubuntu-20.04]
+        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, macos-13, macos-14]
+        # Uncomment the following line for faster testing of the workflow
+        # os: [ubuntu-20.04]
     
     steps:      
       - name: Checkout the repository to the GitHub runner
         uses: actions/checkout@v4
-      
-        # TODO: Comment the following line later
-      - name: List the github runner details
-        run: |
-          echo ${{github.event_name}} 
-          echo ${{github.ref}}
 
       - name: Setup GNU Fortran
         if: false == contains( matrix.os, 'windows')
@@ -145,9 +140,10 @@ jobs:
         if: false == contains( matrix.os, 'macos')
         uses: pypa/cibuildwheel@v2.18.1
 
-        # TODO: Comment the following 2 lines later
-        env:
-          CIBW_BUILD: "cp38-* cp312-*"
+        # Uncomment the following 2 lines for faster testing of the workflow
+        # env:
+        #   CIBW_BUILD: "cp38-* cp312-*"
+
         # env:
         #   CIBW_SOME_OPTION: value
         #   # Disable building for PyPy, 32bit
