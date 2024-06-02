@@ -1,5 +1,7 @@
 # Welcome to PySLSQP
 
+## ⚠️ This documentation was written for PySLSQP_alpha which is now moved to [PySLQP](https://github.com/anugrahjo/PySLSQP/). PySLSQP_alpha is now archived and read-only and this documentation is obsolete. Please visit [PySLQP docs](https://pyslsqp.readthedocs.io/) for the latest documentation.⚠️
+
 The SLSQP algorithm is designed to solve nonlinear programming (NLP) problems.
 PySLSQP is a Python package that wraps the original SLSQP algorithm 
 implemented in Fortran by Dieter Kraft {cite:p}`kraft1988software, kraft1994algorithm`.
