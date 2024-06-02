@@ -14,7 +14,7 @@
 [![Issues](https://img.shields.io/github/issues/anugrahjo/PySLSQP_alpha.svg)](https://github.com/anugrahjo/PySLSQP_alpha/issues)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/anugrahjo/PySLSQP_alpha/blob/main/LICENSE.txt)
 
-## ⚠️ PySLSQP_alpha has been moved to [PySLQP](https://github.com/anugrahjo/PySLSQP/). Because of this, PySLSQP_alpha is now archived and read-only. ⚠️
+## ⚠️ PySLSQP_alpha has been moved to [PySLSQP](https://github.com/anugrahjo/PySLSQP/). Because of this, PySLSQP_alpha is now archived and read-only. ⚠️
 
 
 The SLSQP algorithm is designed to solve nonlinear programming (NLP) problems.
